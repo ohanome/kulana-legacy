@@ -1,1 +1,14 @@
+# Ignore project dependencies since they will be fetched by go mod vendor
+/vendor
+
+# Ignore GoLand project configurations
 /.idea
+
+# Ignore every built file
+kulana*
+
+# Ignore test, temp and backup files
+*.bak
+*.test
+*test.*
+*.tmp
