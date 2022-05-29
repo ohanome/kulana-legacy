@@ -21,6 +21,14 @@ go build
 
 ## 📦 Installation
 
+**Unix/Mac**
+
+
+
+**Windows**
+
+_tbd_
+
 ## 🔮 Usage
 
 ## 📜 License
