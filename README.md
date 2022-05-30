@@ -161,6 +161,28 @@ You can include the length of the responses content by passing `--include-length
 - [ ] Sending result to an API
 - [ ] Global configuration
 
+## ⭐️ Usage examples
+
+Fetch the time and HTTP-Status of the host `https://ohano.me`:
+```shell
+kulana https://ohano.me
+```
+
+Watch the status of the host `https://ohano.me`:
+```shell
+kulana https://ohano.me --loop
+```
+
+Watch the status of the host `https://ohano.me` but wait 60 seconds between every request:
+```shell
+kulana https://ohano.me --loop --delay=60000
+```
+
+Fetch the status of the host `https://ohano.me` as JSON:
+```shell
+kulana https://ohano.me --json
+```
+
 ## 📜 License
 
 This project is licensed under the GNU GPL v3, for more details see [license](./LICENSE).

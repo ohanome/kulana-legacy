@@ -2,6 +2,9 @@ package template
 
 import "kulana/fetcher"
 
+const FormatJSON = "json"
+const FormatCSV = "csv"
+
 var url string
 var status int
 var time float64
