@@ -156,7 +156,7 @@ You can include the length of the responses content by passing `--include-length
 
 - [ ] Mail notification
 - [ ] Runnable as background task
-- [x] X-only arguments (e.g. `--status-only` to get only the HTTP status) (3958558f3d55e21956ec9e6cc9a8a8bc9e005650)
+- [x] X-only arguments (e.g. `--status-only` to get only the HTTP status)
 - [ ] Crawling functionality
 - [ ] Sending result to an API
 - [ ] Global configuration
