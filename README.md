@@ -47,7 +47,7 @@ kulana URL
 where `URL` is a valid URL.
 
 **Summary**
-```shell
+```text
 Usage
   kulana [...args]
 
@@ -60,6 +60,9 @@ Possible arguments
   --delay=n                 - Wait n milliseconds after each request; works only in combination with '--loop'; doesn't work with '-f'
   -f | --follow-redirect    - Sends another request if the response contains a Location header and a 3xx status code; doesn't work with '--loop'
   -l | --include-length     - Includes the content length
+  --url-only                - Outputs only the URL (-l will be ignored)
+  --time-only               - Outputs only the response time (-l will be ignored)
+  --status-only             - Outputs only the status code (-l will be ignored)  
 
 Examples
   kulana https://ohano.me               - To get the HTTP status and the response time of https://ohano.me
@@ -153,9 +156,10 @@ You can include the length of the responses content by passing `--include-length
 
 - [ ] Mail notification
 - [ ] Runnable as background task
-- [ ] X-only arguments (e.g. `--status-only` to get only the HTTP status)
+- [x] X-only arguments (e.g. `--status-only` to get only the HTTP status)
 - [ ] Crawling functionality
 - [ ] Sending result to an API
+- [ ] Global configuration
 
 ## 📜 License
 

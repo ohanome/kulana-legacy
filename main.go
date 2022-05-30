@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"kulana/fetcher"
 	"kulana/misc"
 	"kulana/setup"
 	"kulana/template"
-	"net/http"
 	"os"
 	"runtime"
 	"time"
@@ -18,6 +18,7 @@ var version = "0.0.1"
 var url = ""
 var getContentLength = false
 var followRedirect = false
+var only = ""
 
 // 1000 ms as default
 var delay int64 = 1000 * 1000000
@@ -31,11 +32,7 @@ func detectOS() {
 
 func pingURL() {
 	start := misc.MicroTime()
-	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-	}
+	client := fetcher.CreateClient()
 	resp, err := client.Get(url)
 	defer client.CloseIdleConnections()
 	misc.Check(err)
@@ -57,7 +54,38 @@ func pingURL() {
 		contentLength = resp.ContentLength
 	}
 
-	t := template.Render(format, url, statusCode, responseTimeRounded, destination, contentLength)
+	response := fetcher.Response{
+		Url:           url,
+		Status:        statusCode,
+		Time:          responseTimeRounded,
+		Destination:   destination,
+		ContentLength: contentLength,
+	}
+
+	switch only {
+	case "url":
+		response.Status = 0
+		response.Time = 0
+		response.Destination = ""
+		response.ContentLength = -1
+		break
+
+	case "status":
+		response.Url = ""
+		response.Time = 0
+		response.Destination = ""
+		response.ContentLength = -1
+		break
+
+	case "time":
+		response.Url = ""
+		response.Status = 0
+		response.Destination = ""
+		response.ContentLength = -1
+		break
+	}
+
+	t := template.Render(format, response)
 	fmt.Print(t + nl)
 
 	if followRedirect && !loop && statusCode < 400 && statusCode >= 300 {

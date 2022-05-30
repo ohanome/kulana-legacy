@@ -50,6 +50,18 @@ func processArgs() {
 				}
 				break
 
+			case "--status-only":
+				only = "status"
+				break
+
+			case "--url-only":
+				only = "url"
+				break
+
+			case "--time-only":
+				only = "time"
+				break
+
 			default:
 				delayMatch, _ := regexp.Match(`^--delay=\d.*$`, []byte(arg))
 				if delayMatch {

@@ -20,6 +20,9 @@ func usage() {
 		"  --delay=n                 - Wait n milliseconds after each request; works only in combination with '--loop'; doesn't work with '-f'" + nl +
 		"  -f | --follow-redirect    - Sends another request if the response contains a Location header and a 3xx status code; doesn't work with '--loop'" + nl +
 		"  -l | --include-length     - Includes the content length" + nl +
+		"  --url-only                - Outputs only the URL (-l will be ignored)" + nl +
+		"  --time-only               - Outputs only the response time in milliseconds (-l will be ignored)" + nl +
+		"  --status-only             - Outputs only the HTTP status (-l will be ignored)" + nl +
 		"" + nl +
 		"Examples" + nl +
 		"  kulana https://ohano.me               - To get the HTTP status and the response time of https://ohano.me" + nl +
