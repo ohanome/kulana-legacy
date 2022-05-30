@@ -82,6 +82,15 @@ kulana URL --json --csv
 ```
 the output will be formatted as CSV.
 
+If no specific format is given, the default format will be used.
+
+#### Default
+
+The default format separates the single values by tabs, like so
+```shell
+https://ohano.me        200     104.208708
+```
+
 #### JSON
 
 The JSON format contains all keys to every value, which may be more useful to work with in other systems.
