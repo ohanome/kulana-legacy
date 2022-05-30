@@ -154,12 +154,12 @@ You can include the length of the responses content by passing `--include-length
 
 ## 🔮 Planned features
 
-- [ ] Mail notification
+- [x] Mail notification (documentation missing!)
 - [ ] Runnable as background task
 - [x] X-only arguments (e.g. `--status-only` to get only the HTTP status)
 - [ ] Crawling functionality
 - [ ] Sending result to an API
-- [ ] Global configuration
+- [x] Global configuration (documentation missing!)
 
 ## ⭐️ Usage examples
 

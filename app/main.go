@@ -2,9 +2,11 @@ package app
 
 import (
 	"fmt"
+	"kulana/email"
 	"kulana/fetcher"
 	"kulana/misc"
 	"kulana/template"
+	"net/mail"
 	"os"
 	"regexp"
 	"strconv"
@@ -19,6 +21,8 @@ type Application struct {
 	Filter         fetcher.ResponseFilter
 	Delay          int64
 	Url            string
+	NotifyMailTo   string
+	NotifyViaMail  bool
 }
 
 // Build a default app.
@@ -33,8 +37,10 @@ var defaultApp = Application{
 		Destination:   true,
 		ContentLength: false,
 	},
-	Delay: 1000,
-	Url:   "",
+	Delay:         1000,
+	Url:           "",
+	NotifyMailTo:  "",
+	NotifyViaMail: false,
 }
 
 func ProcessArgs() Application {
@@ -92,17 +98,31 @@ func ProcessArgs() Application {
 				app.Filter = fetcher.BuildFilterFromNumeric(fetcher.FilterTime)
 				break
 
+			case "--notify":
+			case "-n":
+				app.NotifyViaMail = true
+				break
+
 			default:
-				delayMatch, _ := regexp.Match(`^--delay=\d.*$`, []byte(arg))
+				delayMatch, _ := regexp.Match(`^--delay=\d.+$`, []byte(arg))
 				if delayMatch {
 					d := strings.ReplaceAll(arg, "--delay=", "")
 					dInt, _ := strconv.ParseInt(d, 10, 64)
 					app.Delay = dInt * 1000000
 				}
 
-				urlMatch, _ := regexp.Match(`^http(s|)://\w.*\.\w{2,3}$`, []byte(arg))
+				urlMatch, _ := regexp.Match(`^http(s|)://\w.+\.\w{2,3}$`, []byte(arg))
 				if urlMatch {
 					app.Url = arg
+				}
+
+				mailMatch, _ := regexp.Match(`^--notify-mail=.+$`, []byte(arg))
+				if mailMatch {
+					m := strings.ReplaceAll(arg, "--notify-mail=", "")
+					_, mErr := mail.ParseAddress(m)
+					if mErr == nil {
+						app.NotifyMailTo = m
+					}
 				}
 				break
 			}
@@ -111,6 +131,11 @@ func ProcessArgs() Application {
 		if app.Url == "" {
 			misc.Die("No URL given.")
 		}
+
+		if app.NotifyViaMail && app.NotifyMailTo == "" {
+			fmt.Println("Email address is missing, no email will be sent.")
+			app.NotifyViaMail = false
+		}
 	}
 
 	// Correct some values if they're wrong.
@@ -118,17 +143,29 @@ func ProcessArgs() Application {
 		app.Delay = 100
 	}
 
+	if app.NotifyViaMail && app.Delay < 30000 {
+		app.Delay = 30000
+		fmt.Println("When sending notification emails, the minimum delay is 30000 (30 seconds).")
+	}
+
 	return app
 }
 
 func Run(application Application) {
+
 	for {
 		response, filteredResponse := fetcher.FetchAndFilter(application.Url, application.Filter)
 		fmt.Print(template.Render(application.OutputFormat, filteredResponse) + misc.GetNLChar())
+		if application.NotifyViaMail {
+			email.SendNotificationMail(application.NotifyMailTo, application.Url, response.Status)
+		}
 		if application.FollowRedirect && !application.RunInLoop && response.Status < 400 && response.Status >= 300 {
 			application.Url = response.Destination
 			response, filteredResponse = fetcher.FetchAndFilter(application.Url, application.Filter)
 			fmt.Print(template.Render(application.OutputFormat, filteredResponse) + misc.GetNLChar())
+			if application.NotifyViaMail {
+				email.SendNotificationMail(application.NotifyMailTo, application.Url, response.Status)
+			}
 		}
 
 		if !application.RunInLoop {

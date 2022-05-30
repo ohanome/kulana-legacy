@@ -1,4 +1,4 @@
-package mail
+package email
 
 import (
 	"fmt"
@@ -16,6 +16,13 @@ type Mail struct {
 	Body    string
 }
 
+var defaultMail = Mail{
+	Sender:  "",
+	To:      nil,
+	Subject: "",
+	Body:    "",
+}
+
 func CheckMailEnvironment() {
 	if os.Getenv("SMTP_HOST") == "" {
 		misc.Die("Missing SMTP_HOST config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
@@ -28,9 +35,6 @@ func CheckMailEnvironment() {
 	}
 	if os.Getenv("SMTP_PORT") == "" {
 		misc.Die("Missing SMTP_PORT config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
-	}
-	if os.Getenv("SMTP_ENCRYPTION") == "" {
-		misc.Die("Missing SMTP_ENCRYPTION config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
 	}
 	if os.Getenv("SMTP_ADDRESS") == "" {
 		misc.Die("Missing SMTP_ADDRESS config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
@@ -71,23 +75,32 @@ func SendMail(to []string, subject string, message string) {
 	fmt.Println("Email Sent Successfully!")
 }
 
-func SendTestMail() {
-	to := []string{
-		"thomasartmann@icloud.com",
-	}
-
-	subject := "Testmessage"
-	message := "This is a test message."
-
-	SendMail(to, subject, message)
-}
-
 func BuildMessage(mail Mail) string {
-	msg := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\r\n"
+	msg := "MIME-version: 1.0;\r\nContent-Type: text/html; charset=\"UTF-8\";\r\n"
 	msg += fmt.Sprintf("From: %s\r\n", mail.Sender)
 	msg += fmt.Sprintf("To: %s\r\n", strings.Join(mail.To, ";"))
 	msg += fmt.Sprintf("Subject: %s\r\n", mail.Subject)
 	msg += fmt.Sprintf("\r\n%s\r\n", mail.Body)
 
 	return msg
+}
+
+func SendHostDownEmail(to string, host string, status int) {
+	subject := fmt.Sprintf("[kulana] Host %s is DOWN!", host)
+	message := fmt.Sprintf("The host %s is not reachable. The last request returned with the HTTP status %d.", host, status)
+	SendMail([]string{to}, subject, message)
+}
+
+func SendHostUpEmail(to string, host string, status int) {
+	subject := fmt.Sprintf("[kulana] Host %s is UP!", host)
+	message := fmt.Sprintf("The host %s is reachable. The last request returned with the HTTP status %d.", host, status)
+	SendMail([]string{to}, subject, message)
+}
+
+func SendNotificationMail(to string, host string, status int) {
+	if status < 400 {
+		SendHostUpEmail(to, host, status)
+	} else {
+		SendHostDownEmail(to, host, status)
+	}
 }
