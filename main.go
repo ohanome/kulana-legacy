@@ -66,6 +66,7 @@ func pingURL() {
 	}
 }
 
+// Main entrypoint
 func main() {
 	detectOS()
 	processArgs()
