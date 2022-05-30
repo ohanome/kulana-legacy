@@ -9,6 +9,14 @@ import (
 var setupDir = os.Getenv("HOME") + "/.kulana"
 var envFile = setupDir + "/.env"
 
+func getSetupDir() string {
+	return setupDir
+}
+
+func GetEnvFile() string {
+	return envFile
+}
+
 func EnsureEnvironmentIsReady() {
 	// Check if dir ~/.kulana exists
 	_, err := os.Stat(setupDir)
@@ -38,23 +46,4 @@ func EnsureEnvironmentIsReady() {
 
 	err = godotenv.Load(envFile)
 	misc.Check(err)
-
-	if os.Getenv("SMTP_HOST") == "" {
-		misc.Die("Missing SMTP_HOST config. Edit the environment file under " + envFile + " and try again.")
-	}
-	if os.Getenv("SMTP_USERNAME") == "" {
-		misc.Die("Missing SMTP_USERNAME config. Edit the environment file under " + envFile + " and try again.")
-	}
-	if os.Getenv("SMTP_PASSWORD") == "" {
-		misc.Die("Missing SMTP_PASSWORD config. Edit the environment file under " + envFile + " and try again.")
-	}
-	if os.Getenv("SMTP_PORT") == "" {
-		misc.Die("Missing SMTP_PORT config. Edit the environment file under " + envFile + " and try again.")
-	}
-	if os.Getenv("SMTP_ENCRYPTION") == "" {
-		misc.Die("Missing SMTP_ENCRYPTION config. Edit the environment file under " + envFile + " and try again.")
-	}
-	if os.Getenv("SMTP_ADDRESS") == "" {
-		misc.Die("Missing SMTP_ADDRESS config. Edit the environment file under " + envFile + " and try again.")
-	}
 }

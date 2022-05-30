@@ -2,6 +2,8 @@ package mail
 
 import (
 	"fmt"
+	"kulana/misc"
+	"kulana/setup"
 	"net/smtp"
 	"os"
 	"strings"
@@ -14,7 +16,29 @@ type Mail struct {
 	Body    string
 }
 
+func CheckMailEnvironment() {
+	if os.Getenv("SMTP_HOST") == "" {
+		misc.Die("Missing SMTP_HOST config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+	}
+	if os.Getenv("SMTP_USERNAME") == "" {
+		misc.Die("Missing SMTP_USERNAME config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+	}
+	if os.Getenv("SMTP_PASSWORD") == "" {
+		misc.Die("Missing SMTP_PASSWORD config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+	}
+	if os.Getenv("SMTP_PORT") == "" {
+		misc.Die("Missing SMTP_PORT config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+	}
+	if os.Getenv("SMTP_ENCRYPTION") == "" {
+		misc.Die("Missing SMTP_ENCRYPTION config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+	}
+	if os.Getenv("SMTP_ADDRESS") == "" {
+		misc.Die("Missing SMTP_ADDRESS config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+	}
+}
+
 func SendMail(to []string, subject string, message string) {
+	CheckMailEnvironment()
 
 	// Sender data.
 	from := "kulana <" + os.Getenv("SMTP_ADDRESS") + ">"

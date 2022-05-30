@@ -9,7 +9,7 @@ func usage() {
 		"The return value will always contain the called URL, the HTTP status code of the response and the response time in milliseconds." + nl +
 		"" + nl +
 		"Usage" + nl +
-		"  sitehalth [...args]" + nl +
+		"  kulana [...args]" + nl +
 		"" + nl +
 		"Possible arguments" + nl +
 		"  http...                   - The URL to request; must start with 'http'" + nl +
