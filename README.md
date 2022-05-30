@@ -38,7 +38,7 @@ Optionally, you can execute the steps done by the script by yourself:
 
 _tbd_
 
-## 🔮 Usage
+## 🔥 Usage
 
 The base usage is 
 ```shell
@@ -139,6 +139,14 @@ You can send another request by using `--follow-redirect` (or `-f`).
 ### Content length
 
 You can include the length of the responses content by passing `--include-length` (or `-l`). The content length will be added to the output without any unit, just as plain byte value.
+
+## 🔮 Planned features
+
+- [ ] Mail notification
+- [ ] Runnable as background task
+- [ ] X-only arguments (e.g. `--status-only` to get only the HTTP status)
+- [ ] Crawling functionality
+- [ ] Sending result to an API
 
 ## 📜 License
 
