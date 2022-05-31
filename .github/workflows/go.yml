@@ -11,21 +11,41 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.18
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
 
-    - name: Build
-      run: go build
+      - name: Build
+        run: go build
 
-    - name: Create Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: kulana
-        path: ./kulana
+      - name: Create Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: kulana
+          path: ./kulana
+
+  build-deb-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Build
+        run: ./package-deb.sh
+
+      - name: Create Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: kulana
+          path: ./kulana.deb
+
   build-windows:
     runs-on: windows-latest
     steps:
@@ -42,5 +62,5 @@ jobs:
       - name: Create Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: kulana.exe
+          name: kulana
           path: ./kulana.exe
