@@ -7,8 +7,8 @@ import (
 
 // Main entrypoint
 func main() {
-	application := app.ProcessArgs()
 	setup.EnsureEnvironmentIsReady()
+	application := app.ProcessArgs()
 
 	app.Run(application)
 }

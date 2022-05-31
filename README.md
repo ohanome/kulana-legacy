@@ -57,6 +57,14 @@ kulana URL
 ```
 where `URL` is a valid URL.
 
+**TOC**
+- [Output format](#output-format)
+- [Looping](#looping)
+- [Redirect URLS](#redirect-urls)
+- [Content length](#content-length)
+- [Environment setup](#environment-setup)
+- [Sending notification mails](#sending-notification-mails)
+
 **Summary**
 ```text
 Usage
@@ -68,12 +76,15 @@ Possible arguments
   --json                    - Format the output as JSON
   --csv                     - Format the output as CSV
   --loop                    - Keeps sending requests
-  --delay=n                 - Wait n milliseconds after each request; works only in combination with '--loop'; doesn't work with '-f'
+  --delay=N                 - Wait N milliseconds after each request; works only in combination with '--loop'; doesn't work with '-f'
   -f | --follow-redirect    - Sends another request if the response contains a Location header and a 3xx status code; doesn't work with '--loop'
   -l | --include-length     - Includes the content length
   --url-only                - Outputs only the URL (-l will be ignored)
-  --time-only               - Outputs only the response time (-l will be ignored)
-  --status-only             - Outputs only the status code (-l will be ignored)  
+  --time-only               - Outputs only the response time in milliseconds (-l will be ignored)
+  --status-only             - Outputs only the HTTP status (-l will be ignored)
+  -n | --notify             - Sends an email with the status code to the given email address (--notify-mail needed). The environment will be checked before, so make sure you fill in all variables in ~/.kulana/.env
+  --notify-mail=MAIL        - The address to send the email to
+  --check-env               - Validates that all environment configurations are setup
 
 Examples
   kulana https://ohano.me               - To get the HTTP status and the response time of https://ohano.me
@@ -163,13 +174,43 @@ You can send another request by using `--follow-redirect` (or `-f`).
 
 You can include the length of the responses content by passing `--include-length` (or `-l`). The content length will be added to the output without any unit, just as plain byte value.
 
+### Environment setup
+
+On the first start an .env file will be created under `~/.kulana` (on Windows its mostly under `C:\.kulana`). This will holds several variables for sensitive information, most importantly for any login or access like SMTP authentication.
+
+This environment is needed for the following features (list will be longer as time passes and development continues):
+
+| Feature | Environment prefix |
+|---------|--------------------|
+| Mail    | `SMTP_`            |
+
+### Sending notification mails
+
+You can email the HTTP status of every request to a specified address by passing 2 additional arguments.
+
+The first is the "switch" that turns this feature on:
+```shell
+kulana https://ohano.me -n
+```
+or alternatively
+```shell
+kulana https://ohano.me --notify
+```
+
+The second argument contains the address the notification should be sent to:
+```shell
+kulana https://ohano.me -n --notify-mail=somemail@provider.tld
+```
+
+> Make sure, you have your environment set up, see [#environment-setup](#environment-setup)
+
 ## 🔮 Planned features
 
-- [x] Mail notification (documentation missing!)
 - [ ] Runnable as background task (like docker with commands like `start` and `stop`)
 - [ ] Crawling functionality
 - [ ] Sending result to an API
-- [x] Global configuration (documentation missing!)
+- [ ] Global configuration (via configuration file)
+- [ ] Port ping option
 
 ## ⭐️ Usage examples
 

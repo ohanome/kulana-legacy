@@ -64,12 +64,15 @@ func Usage() {
 		"  --json                    - Format the output as JSON" + GetNLChar() +
 		"  --csv                     - Format the output as CSV" + GetNLChar() +
 		"  --loop                    - Keeps sending requests" + GetNLChar() +
-		"  --delay=n                 - Wait n milliseconds after each request; works only in combination with '--loop'; doesn't work with '-f'" + GetNLChar() +
+		"  --delay=N                 - Wait N milliseconds after each request; works only in combination with '--loop'; doesn't work with '-f'" + GetNLChar() +
 		"  -f | --follow-redirect    - Sends another request if the response contains a Location header and a 3xx status code; doesn't work with '--loop'" + GetNLChar() +
 		"  -l | --include-length     - Includes the content length" + GetNLChar() +
 		"  --url-only                - Outputs only the URL (-l will be ignored)" + GetNLChar() +
 		"  --time-only               - Outputs only the response time in milliseconds (-l will be ignored)" + GetNLChar() +
 		"  --status-only             - Outputs only the HTTP status (-l will be ignored)" + GetNLChar() +
+		"  -n | --notify             - Sends an email with the status code to the given email address (--notify-mail needed). The environment will be checked before, so make sure you fill in all variables in ~/.kulana/.env" + GetNLChar() +
+		"  --notify-mail=MAIL        - The address to send the email to" + GetNLChar() +
+		"  --check-env               - Validates that all environment configurations are setup" + GetNLChar() +
 		"" + GetNLChar() +
 		"Examples" + GetNLChar() +
 		"  kulana https://ohano.me               - To get the HTTP status and the response time of https://ohano.me" + GetNLChar() +

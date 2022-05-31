@@ -16,33 +16,42 @@ type Mail struct {
 	Body    string
 }
 
-var defaultMail = Mail{
-	Sender:  "",
-	To:      nil,
-	Subject: "",
-	Body:    "",
-}
-
-func CheckMailEnvironment() {
+func CheckMailEnvironment(dieOnError bool) bool {
+	err := false
 	if os.Getenv("SMTP_HOST") == "" {
-		misc.Die("Missing SMTP_HOST config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_HOST config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		err = true
 	}
 	if os.Getenv("SMTP_USERNAME") == "" {
-		misc.Die("Missing SMTP_USERNAME config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_USERNAME config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		err = true
 	}
 	if os.Getenv("SMTP_PASSWORD") == "" {
-		misc.Die("Missing SMTP_PASSWORD config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_PASSWORD config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		err = true
 	}
 	if os.Getenv("SMTP_PORT") == "" {
-		misc.Die("Missing SMTP_PORT config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_PORT config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		err = true
 	}
 	if os.Getenv("SMTP_ADDRESS") == "" {
-		misc.Die("Missing SMTP_ADDRESS config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_ADDRESS config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
+		err = true
 	}
+
+	if err {
+		if dieOnError {
+			misc.Die("Mail setup incomplete.")
+		}
+
+		return false
+	}
+
+	return true
 }
 
 func SendMail(to []string, subject string, message string) {
-	CheckMailEnvironment()
+	CheckMailEnvironment(true)
 
 	// Sender data.
 	from := "kulana <" + os.Getenv("SMTP_ADDRESS") + ">"

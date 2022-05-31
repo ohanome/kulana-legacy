@@ -98,6 +98,15 @@ func ProcessArgs() Application {
 				app.Filter = fetcher.BuildFilterFromNumeric(fetcher.FilterTime)
 				break
 
+			case "--check-env":
+				emailSetup := email.CheckMailEnvironment(false)
+
+				if emailSetup {
+					fmt.Println("[OK] Email setup")
+				}
+
+				os.Exit(0)
+
 			case "--notify":
 			case "-n":
 				app.NotifyViaMail = true
