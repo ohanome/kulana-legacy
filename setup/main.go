@@ -119,3 +119,17 @@ func ReadConfig() Config {
 
 	return config
 }
+
+func WriteConfig(config Config) {
+	_, err := os.Stat(configFile)
+	if os.IsNotExist(err) {
+		// Config file should exist at this point.
+		panic(err)
+	}
+
+	configJson, jErr := json.Marshal(config)
+	misc.Check(jErr)
+	
+	fErr := os.WriteFile(configFile, configJson, 0644)
+	misc.Check(fErr)
+}

@@ -51,9 +51,37 @@ and move the binary to your preferred destination.
 
 ## 🔥 Usage
 
+This app is separated in several commands, like `help` or `status`.
+
+For every command the schema is the following:
+```shell
+kulana COMMAND [...args]
+```
+
+**TOC**
+- [Help](#help)
+- [Status](#status)
+
+### Help
+
+The base usage is
+```shell
+kulana help
+```
+
+This will show you all available commands you can use.
+
+Since every command provides its own help section you can safely execute 
+```shell
+kulana COMMAND --help
+```
+to get information about that command.
+
+### Status
+
 The base usage is 
 ```shell
-kulana URL
+kulana status URL
 ```
 where `URL` is a valid URL.
 
@@ -92,7 +120,7 @@ Examples
   kulana https://ohano.me --loop -f     - Will result in an error message since you can't follow redirects in a loop (yet)
 ```
 
-### Output format
+#### Output format
 
 The following formats are available by appending the corresponding argument:
 
@@ -109,14 +137,14 @@ the output will be formatted as CSV.
 
 If no specific format is given, the default format will be used.
 
-#### Default
+##### Default
 
 The default format separates the single values by tabs, like so
 ```shell
 https://ohano.me        200     104.208708
 ```
 
-#### JSON
+##### JSON
 
 The JSON format contains all keys to every value, which may be more useful to work with in other systems.
 
@@ -129,7 +157,7 @@ Sample output:
 }
 ```
 
-#### CSV
+##### CSV
 
 The CSV format does not contain any keys, nly the "raw" values.
 
@@ -143,7 +171,7 @@ Sample output:
 https://ohano.me,200,96.359968
 ```
 
-### Looping
+#### Looping
 
 You can watch a hosts response by passing the `--loop` argument. With this kulana will keep sending requests after a defined delay.
 
@@ -162,7 +190,7 @@ Here the request will be resent every 60 seconds (60.000 milliseconds).
 > {"url":"https://ohano.me","status":"200","time":"77.401638"}
 > ```
 
-### Redirect URLS
+#### Redirect URLS
 
 If the status code of the response is between 300 and 399 and another URL is given by the `Location` header, the destination URL will be added to the output as `"destination"` (in CSV and default format the destination URL will be the 4th value).
 
@@ -170,11 +198,11 @@ You can send another request by using `--follow-redirect` (or `-f`).
 
 > Kulana can't follow redirects in a loop (yet), so using `-f` and `--loop` will result in an error.
 
-### Content length
+#### Content length
 
 You can include the length of the responses content by passing `--include-length` (or `-l`). The content length will be added to the output without any unit, just as plain byte value.
 
-### Environment setup
+#### Environment setup
 
 On the first start an .env file will be created under `~/.kulana` (on Windows its mostly under `C:\.kulana`). This will holds several variables for sensitive information, most importantly for any login or access like SMTP authentication.
 
@@ -184,7 +212,7 @@ This environment is needed for the following features (list will be longer as ti
 |---------|--------------------|
 | Mail    | `SMTP_`            |
 
-### Sending notification mails
+#### Sending notification mails
 
 You can email the HTTP status of every request to a specified address by passing 2 additional arguments.
 
