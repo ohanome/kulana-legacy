@@ -36,7 +36,18 @@ Optionally, you can execute the steps done by the script by yourself:
 
 **Windows**
 
-_tbd_
+To install the app in your default go binary directory (created when installing Go on Windows) run 
+```shell
+go install
+```
+
+You should immediately have access to the `kulana.exe` command from the command line.
+
+Alternatively you can build the app by yourself by running 
+```shell
+go build
+```
+and move the binary to your preferred destination.
 
 ## 🔥 Usage
 
@@ -155,8 +166,7 @@ You can include the length of the responses content by passing `--include-length
 ## 🔮 Planned features
 
 - [x] Mail notification (documentation missing!)
-- [ ] Runnable as background task
-- [x] X-only arguments (e.g. `--status-only` to get only the HTTP status)
+- [ ] Runnable as background task (like docker with commands like `start` and `stop`)
 - [ ] Crawling functionality
 - [ ] Sending result to an API
 - [x] Global configuration (documentation missing!)
