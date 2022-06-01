@@ -4,6 +4,8 @@ Kūlana means "status" in hawaiian[*](https://hilo.hawaii.edu/wehe/?q=kulana#w2w
 
 Possible use cases may be to monitor your hosts or to get if there are any redirections (HTTP status 3xx) or just flex on how small your website is.
 
+_kūlana is brought to you by [ohano](https://ohano.me) ([GitHub](https://github.com/ohanome))._
+
 ## 🛠 Build
 
 **Prerequisites**
