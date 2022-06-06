@@ -78,6 +78,7 @@ const CommandConfig = "config"
 const CommandConfigShort = "c"
 const CommandPing = "ping"
 const CommandPingShort = "p"
+const CommandMX = "mx"
 
 func ProcessArgs() Application {
 	app := defaultApp
@@ -113,6 +114,9 @@ func ProcessArgs() Application {
 		break
 	case CommandPingShort:
 		app.Command = CommandPing
+		break
+	case CommandMX:
+		app.Command = CommandMX
 		break
 
 	default:
@@ -255,6 +259,10 @@ func Run(application Application) {
 
 	case CommandPing:
 		runPing(application)
+		break
+
+	case CommandMX:
+		runMX(application)
 		break
 	}
 }
