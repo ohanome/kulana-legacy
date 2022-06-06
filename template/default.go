@@ -13,6 +13,10 @@ func RenderDefault() string {
 		template = append(template, url)
 	}
 
+	if ipAddress != "" {
+		template = append(template, ipAddress)
+	}
+
 	if status != 0 {
 		template = append(template, strconv.Itoa(status))
 	}

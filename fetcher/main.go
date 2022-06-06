@@ -1,17 +1,10 @@
 package fetcher
 
 import (
+	"kulana/filter"
 	"kulana/misc"
 	"net/http"
 )
-
-type Response struct {
-	Url           string
-	Status        int
-	Time          float64
-	Destination   string
-	ContentLength int64
-}
 
 func CreateHTTPClient() *http.Client {
 	return &http.Client{
@@ -21,15 +14,16 @@ func CreateHTTPClient() *http.Client {
 	}
 }
 
-func FetchHTTPHost(url string) Response {
+func FetchHTTPHost(url string) filter.Output {
 	client := CreateHTTPClient()
 	start := misc.MicroTime()
 	resp, err := client.Get(url)
+	end := misc.MicroTime()
 	defer client.CloseIdleConnections()
 	misc.Check(err)
 
 	statusCode := resp.StatusCode
-	responseTime := (misc.MicroTime() - start) * 1000
+	responseTime := (end - start) * 1000
 	responseTimeRounded := misc.Round(responseTime, 0.000001)
 
 	var destination string
@@ -42,7 +36,7 @@ func FetchHTTPHost(url string) Response {
 
 	contentLength := resp.ContentLength
 
-	response := Response{
+	response := filter.Output{
 		Url:           url,
 		Status:        statusCode,
 		Time:          responseTimeRounded,
@@ -53,8 +47,8 @@ func FetchHTTPHost(url string) Response {
 	return response
 }
 
-func FetchAndFilter(url string, filter ResponseFilter) (Response, Response) {
+func FetchAndFilter(url string, f filter.OutputFilter) (filter.Output, filter.Output) {
 	response := FetchHTTPHost(url)
-	filteredResponse := FilterResponse(response, filter)
+	filteredResponse := filter.FilterOutput(response, f)
 	return response, filteredResponse
 }

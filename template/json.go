@@ -13,6 +13,10 @@ func RenderJSON() string {
 		template = append(template, "\"url\":\""+url+"\"")
 	}
 
+	if ipAddress != "" {
+		template = append(template, "\"ip\":\""+ipAddress+"\"")
+	}
+
 	if status != 0 {
 		template = append(template, "\"status\":\""+strconv.Itoa(status)+"\"")
 	}

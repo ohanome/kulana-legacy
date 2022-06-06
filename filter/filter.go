@@ -1,40 +1,52 @@
-package fetcher
+package filter
 
 import (
 	"strconv"
 	"strings"
 )
 
-const FilterUrl = 1
-const FilterStatus = 2
-const FilterTime = 4
-const FilterDestination = 8
-const FilterContentLength = 16
+const Url = 1
+const Status = 2
+const Time = 4
+const Destination = 8
+const ContentLength = 16
+const IpAddress = 32
 
-type ResponseFilter struct {
+type OutputFilter struct {
 	Url           bool
 	Status        bool
 	Time          bool
 	Destination   bool
 	ContentLength bool
+	IpAddress     bool
 }
 
-func BuildFilterFromBoolean(filterUrl bool, filterStatus bool, filterTime bool, filterDestination bool, filterContentLength bool) ResponseFilter {
-	filter := ResponseFilter{
+type Output struct {
+	Url           string
+	Status        int
+	Time          float64
+	Destination   string
+	ContentLength int64
+	IpAddress     string
+}
+
+func BuildFilterFromBoolean(filterUrl bool, filterStatus bool, filterTime bool, filterDestination bool, filterContentLength bool, filterIpAddress bool) OutputFilter {
+	filter := OutputFilter{
 		Url:           filterUrl,
 		Status:        filterStatus,
 		Time:          filterTime,
 		Destination:   filterDestination,
 		ContentLength: filterContentLength,
+		IpAddress:     filterIpAddress,
 	}
 
 	return filter
 }
 
-func BuildFilterFromNumeric(settings int64) ResponseFilter {
+func BuildFilterFromNumeric(settings int64) OutputFilter {
 	settingsBinary := strconv.FormatInt(settings, 2)
 
-	filters := []bool{false, false, false, false, false}
+	filters := []bool{false, false, false, false, false, false}
 
 	for index, element := range strings.Split(settingsBinary, "") {
 		if element == "1" {
@@ -42,18 +54,19 @@ func BuildFilterFromNumeric(settings int64) ResponseFilter {
 		}
 	}
 
-	filter := ResponseFilter{
+	filter := OutputFilter{
 		Url:           filters[0],
 		Status:        filters[1],
 		Time:          filters[2],
 		Destination:   filters[3],
 		ContentLength: filters[4],
+		IpAddress:     filters[5],
 	}
 
 	return filter
 }
 
-func FilterResponse(response Response, filter ResponseFilter) Response {
+func FilterOutput(response Output, filter OutputFilter) Output {
 	if !filter.Url {
 		response.Url = ""
 	}
@@ -72,6 +85,10 @@ func FilterResponse(response Response, filter ResponseFilter) Response {
 
 	if !filter.ContentLength {
 		response.ContentLength = -1
+	}
+
+	if !filter.IpAddress {
+		response.IpAddress = ""
 	}
 
 	return response

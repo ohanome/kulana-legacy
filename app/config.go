@@ -9,26 +9,6 @@ import (
 	"strings"
 )
 
-func processConfigArgs(application Application) Application {
-	l := len(os.Args)
-	if l == 2 {
-		misc.Usage(CommandConfig)
-		os.Exit(1)
-	}
-
-	if l == 3 && (os.Args[2] == "--help" || os.Args[2] == "-h") {
-		code := 1
-		if os.Args[2] == "--help" || os.Args[2] == "-h" {
-			code = 0
-		}
-
-		misc.Usage(CommandConfig)
-		os.Exit(code)
-	}
-
-	return application
-}
-
 func runConfig(application Application) {
 	l := len(os.Args)
 	minlength := 3
