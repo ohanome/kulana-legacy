@@ -8,6 +8,8 @@ Possible use cases may be to monitor your hosts or to get if there are any redir
 
 _kūlana is brought to you by [ohano](https://ohano.me) ([GitHub](https://github.com/ohanome))._
 
+> Documentation is still WIP but will be finished before version 1.0.0.
+
 ## Contents
 
 - [Build](build.md)
