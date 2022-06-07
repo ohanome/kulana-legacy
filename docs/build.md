@@ -1,4 +1,6 @@
-# 🛠 Building kulana
+---
+title: 🛠 Building kulana
+---
 
 [Homepage](index.md) > Build
 
