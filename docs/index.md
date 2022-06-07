@@ -6,6 +6,8 @@ Possible use cases may be to monitor your hosts or to get if there are any redir
 
 _kūlana is brought to you by [ohano](https://ohano.me) ([GitHub](https://github.com/ohanome))._
 
+[testpage](./testpage.md)
+
 ## 🛠 Build
 
 **Prerequisites**
