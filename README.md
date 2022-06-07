@@ -63,6 +63,9 @@ kulana COMMAND [...args]
 **TOC**
 - [Help](#help)
 - [Status](#status)
+- [Ping](#ping)
+- [Config](#config)
+- [MX Lookup](#mx-lookup)
 
 ### Help
 
@@ -98,7 +101,7 @@ where `URL` is a valid URL.
 **Summary**
 ```text
 Usage
-  kulana [...args]
+  kulana status [...args]
 
 Possible arguments
   http...                   - The URL to request; must start with 'http'
@@ -117,9 +120,9 @@ Possible arguments
   --check-env               - Validates that all environment configurations are setup
 
 Examples
-  kulana https://ohano.me               - To get the HTTP status and the response time of https://ohano.me
-  kulana https://ohano.me --loop        - Same as above, but the request will be sent every second until the program will be stopped
-  kulana https://ohano.me --loop -f     - Will result in an error message since you can't follow redirects in a loop (yet)
+  kulana status https://ohano.me               - To get the HTTP status and the response time of https://ohano.me
+  kulana status https://ohano.me --loop        - Same as above, but the request will be sent every second until the program will be stopped
+  kulana status https://ohano.me --loop -f     - Will result in an error message since you can't follow redirects in a loop (yet)
 ```
 
 #### Output format
@@ -133,7 +136,7 @@ The following formats are available by appending the corresponding argument:
 
 The last argument will be used, meaning that if you execute 
 ```shell
-kulana URL --json --csv
+kulana status URL --json --csv
 ```
 the output will be formatted as CSV.
 
@@ -179,7 +182,7 @@ You can watch a hosts response by passing the `--loop` argument. With this kulan
 
 The delay is by default 1000 ms, but you can modify it with the `--delay` argument. Example:
 ```shell
-kulana URL --loop --delay=60000
+kulana status URL --loop --delay=60000
 ```
 Here the request will be resent every 60 seconds (60.000 milliseconds).
 
@@ -220,27 +223,31 @@ You can email the HTTP status of every request to a specified address by passing
 
 The first is the "switch" that turns this feature on:
 ```shell
-kulana https://ohano.me -n
+$ kulana status https://ohano.me -n
 ```
 or alternatively
 ```shell
-kulana https://ohano.me --notify
+$ kulana status https://ohano.me --notify
 ```
 
 The second argument contains the address the notification should be sent to:
 ```shell
-kulana https://ohano.me -n --notify-mail=somemail@provider.tld
+$ kulana status https://ohano.me -n --notify-mail=somemail@provider.tld
 ```
 
 > Make sure, you have your environment set up, see [#environment-setup](#environment-setup)
 
+### Ping
+
+### Config
+
+### MX Lookup
+
 ## 🔮 Planned features
 
-- [ ] Runnable as background task (like docker with commands like `start` and `stop`)
+- [ ] Optionally runnable as background task (like docker with commands like `start` and `stop`)
 - [ ] Crawling functionality
-- [ ] Sending result to an API
 - [ ] Global configuration (via configuration file)
-- [ ] Port ping option
 
 ## ⭐️ Usage examples
 

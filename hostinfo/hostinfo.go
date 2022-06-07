@@ -1,6 +1,7 @@
 package hostinfo
 
 import (
+	"kulana/filter"
 	"kulana/misc"
 	"net"
 	"strings"
@@ -48,4 +49,22 @@ func Fetch(hostname string) HostInfo {
 	hostinfo.TXT = txt
 
 	return hostinfo
+}
+
+func FetchAsOutput(hostname string, f filter.OutputFilter) (filter.Output, filter.Output) {
+	info := Fetch(hostname)
+
+	o := filter.Output{
+		Hostname:      hostname,
+		Status:        0,
+		Time:          0,
+		Destination:   "",
+		ContentLength: 0,
+		IpAddress:     "",
+		MXRecords:     info.MX,
+		ICMPCode:      0,
+	}
+
+	of := filter.FilterOutput(o, f)
+	return o, of
 }

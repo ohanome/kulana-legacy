@@ -59,11 +59,16 @@ var defaultApp = Application{
 		Status:        true,
 		Destination:   true,
 		ContentLength: false,
+		IpAddress:     true,
+		MXRecords:     true,
+		ICMPCode:      true,
+		Hostname:      true,
+		Port:          true,
 	},
 	Delay:         1000,
 	Url:           "",
 	Host:          "",
-	Port:          80,
+	Port:          -1,
 	NotifyMailTo:  "",
 	NotifyViaMail: false,
 	Timeout:       ping.Timeout,
@@ -129,7 +134,7 @@ func ProcessArgs() Application {
 			switch arg {
 			case "--help":
 			case "-h":
-				misc.Usage(CommandStatus)
+				misc.Usage(app.Command)
 				os.Exit(0)
 
 			case "--json":
@@ -268,6 +273,8 @@ func Run(application Application) {
 }
 
 func validate(app Application) Application {
+	app.Filter = filter.GetDefault(app.Command)
+
 	if app.Command == CommandStatus {
 		if app.Url == "" {
 			misc.Die("No URL given.")
@@ -278,8 +285,6 @@ func validate(app Application) Application {
 		if app.Host == "" {
 			misc.Die("No host given.")
 		}
-
-		app.Filter.IpAddress = true
 	}
 
 	if app.NotifyViaMail && app.NotifyMailTo == "" {
