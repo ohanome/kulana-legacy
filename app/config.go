@@ -25,7 +25,7 @@ func runConfig(application Application) {
 		break
 	}
 
-	getConfig("foo")
+	getConfig("mail.subject")
 
 	if l < minlength {
 		misc.Die("Not enough arguments.")
@@ -36,8 +36,9 @@ func runConfig(application Application) {
 
 // WIP
 func getConfig(key string) any {
+	fmt.Println(key)
 	config := setup.ReadConfig()
-	PrintFields(config.Mail)
+	PrintFields(config)
 
 	return true
 }
@@ -53,18 +54,21 @@ func PrintFields(b any) {
 	for i := 0; i < val.Type().NumField(); i++ {
 		t := val.Type().Field(i)
 		fieldName := t.Name
+		fmt.Printf("fieldName: %s\n", fieldName)
+		fmt.Printf("t: %v\n", t)
 
 		switch jsonTag := t.Tag.Get("json"); jsonTag {
 		case "-":
 		case "":
-			fmt.Println(fieldName)
+			fmt.Printf("fieldName: %s\n", fieldName)
 		default:
 			parts := strings.Split(jsonTag, ",")
 			name := parts[0]
 			if name == "" {
 				name = fieldName
 			}
-			fmt.Println(name)
+			fmt.Printf("name: %s\n", name)
+			fmt.Printf("jsonTag: %s\n", jsonTag)
 		}
 	}
 }

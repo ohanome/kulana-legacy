@@ -38,13 +38,14 @@ type Application struct {
 	Delay int64
 
 	// The url to fetch.
-	Url           string
-	Host          string
-	Port          int
-	NotifyMailTo  string
-	NotifyViaMail bool
-	Timeout       int
-	Protocol      string
+	Url                  string
+	Host                 string
+	Port                 int
+	NotifyMailTo         string
+	NotifyViaMail        bool
+	Timeout              int
+	Protocol             string
+	SkipFilterValidation bool
 }
 
 // Build a default app.
@@ -65,14 +66,15 @@ var defaultApp = Application{
 		Hostname:      true,
 		Port:          true,
 	},
-	Delay:         1000,
-	Url:           "",
-	Host:          "",
-	Port:          -1,
-	NotifyMailTo:  "",
-	NotifyViaMail: false,
-	Timeout:       ping.Timeout,
-	Protocol:      ping.DefaultProtocol,
+	Delay:                1000,
+	Url:                  "",
+	Host:                 "",
+	Port:                 -1,
+	NotifyMailTo:         "",
+	NotifyViaMail:        false,
+	Timeout:              ping.Timeout,
+	Protocol:             ping.DefaultProtocol,
+	SkipFilterValidation: false,
 }
 
 const CommandHelp = "help"
@@ -167,14 +169,17 @@ func ProcessArgs() Application {
 
 			case "--status-only":
 				app.Filter = filter.BuildFilterFromNumeric(filter.Status)
+				app.SkipFilterValidation = true
 				break
 
 			case "--url-only":
 				app.Filter = filter.BuildFilterFromNumeric(filter.Url)
+				app.SkipFilterValidation = true
 				break
 
 			case "--time-only":
 				app.Filter = filter.BuildFilterFromNumeric(filter.Time)
+				app.SkipFilterValidation = true
 				break
 
 			case "--check-env":
@@ -273,7 +278,9 @@ func Run(application Application) {
 }
 
 func validate(app Application) Application {
-	app.Filter = filter.GetDefault(app.Command)
+	if !app.SkipFilterValidation {
+		app.Filter = filter.GetDefault(app.Command)
+	}
 
 	if app.Command == CommandStatus {
 		if app.Url == "" {
