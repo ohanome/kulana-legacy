@@ -15,6 +15,8 @@ const MXRecords = 64
 const ICMPCode = 128
 const Hostname = 256
 const Port = 512
+const Content = 1024
+const ForeignID = 2048
 
 type OutputFilter struct {
 	Url           bool
@@ -27,6 +29,8 @@ type OutputFilter struct {
 	ICMPCode      bool
 	Hostname      bool
 	Port          bool
+	Content       bool
+	ForeignID     bool
 }
 
 type Output struct {
@@ -40,6 +44,17 @@ type Output struct {
 	ICMPCode      int
 	Hostname      string
 	Port          int
+
+	// The fetched page content.
+	Content string
+
+	// ForeignID is being used by foreign systems only.
+	// For example, let's say there's a Drupal system where the output needs to be sent to and let's assume there are
+	// two entity types implemented which are used to manage the contents and its relations:
+	// - Output; an entity which holds the data represented by this struct and
+	// - Page; an entity which is used to build the relationship between Outputs for the same URL (1:M Page:Output)
+	// In this case the ForeignID is the ID of the parent Page entity.
+	ForeignID string
 }
 
 func BuildFilterFromBoolean(
@@ -53,6 +68,8 @@ func BuildFilterFromBoolean(
 	filterIcmpCode bool,
 	filterHostname bool,
 	filterPort bool,
+	filterContent bool,
+	filterForeignId bool,
 ) OutputFilter {
 	filter := OutputFilter{
 		Url:           filterUrl,
@@ -65,6 +82,8 @@ func BuildFilterFromBoolean(
 		ICMPCode:      filterIcmpCode,
 		Hostname:      filterHostname,
 		Port:          filterPort,
+		Content:       filterContent,
+		ForeignID:     filterForeignId,
 	}
 
 	return filter
@@ -73,7 +92,7 @@ func BuildFilterFromBoolean(
 func BuildFilterFromNumeric(settings int64) OutputFilter {
 	settingsBinary := strconv.FormatInt(settings, 2)
 
-	filters := []bool{false, false, false, false, false, false, false, false, false, false}
+	filters := []bool{false, false, false, false, false, false, false, false, false, false, false, false}
 
 	for index, element := range strings.Split(settingsBinary, "") {
 		if element == "1" {
@@ -92,6 +111,8 @@ func BuildFilterFromNumeric(settings int64) OutputFilter {
 		ICMPCode:      filters[7],
 		Hostname:      filters[8],
 		Port:          filters[9],
+		Content:       filters[10],
+		ForeignID:     filters[11],
 	}
 
 	return filter
@@ -136,6 +157,14 @@ func FilterOutput(response Output, filter OutputFilter) Output {
 
 	if !filter.Port {
 		response.Port = 0
+	}
+
+	if !filter.Content {
+		response.Content = ""
+	}
+
+	if !filter.ForeignID {
+		response.ForeignID = ""
 	}
 
 	return response

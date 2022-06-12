@@ -11,6 +11,8 @@ var defaultAll = OutputFilter{
 	ICMPCode:      true,
 	Hostname:      true,
 	Port:          true,
+	Content:       true,
+	ForeignID:     true,
 }
 
 var defaultStatus = OutputFilter{
@@ -24,6 +26,8 @@ var defaultStatus = OutputFilter{
 	ICMPCode:      false,
 	Hostname:      false,
 	Port:          false,
+	Content:       false,
+	ForeignID:     true,
 }
 
 var defaultPing = OutputFilter{
@@ -37,6 +41,8 @@ var defaultPing = OutputFilter{
 	ICMPCode:      true,
 	Hostname:      true,
 	Port:          true,
+	Content:       false,
+	ForeignID:     true,
 }
 
 var defaultMx = OutputFilter{
@@ -50,6 +56,8 @@ var defaultMx = OutputFilter{
 	ICMPCode:      false,
 	Hostname:      true,
 	Port:          false,
+	Content:       false,
+	ForeignID:     true,
 }
 
 func GetDefault(command string) OutputFilter {

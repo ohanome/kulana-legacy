@@ -46,6 +46,7 @@ type Application struct {
 	Timeout              int
 	Protocol             string
 	SkipFilterValidation bool
+	ForeignID            string
 }
 
 // Build a default app.
@@ -65,6 +66,8 @@ var defaultApp = Application{
 		ICMPCode:      true,
 		Hostname:      true,
 		Port:          true,
+		Content:       false,
+		ForeignID:     false,
 	},
 	Delay:                1000,
 	Url:                  "",
@@ -75,6 +78,7 @@ var defaultApp = Application{
 	Timeout:              ping.Timeout,
 	Protocol:             ping.DefaultProtocol,
 	SkipFilterValidation: false,
+	ForeignID:            "",
 }
 
 const CommandHelp = "help"
@@ -145,6 +149,10 @@ func ProcessArgs() Application {
 
 			case "--csv":
 				app.OutputFormat = template.FormatCSV
+				break
+
+			case "--full":
+				app.Filter = filter.GetDefault("all")
 				break
 
 			case "--loop":
@@ -247,6 +255,13 @@ func ProcessArgs() Application {
 					}
 					app.Port = portValue
 				}
+
+				foreignIdMatch, _ := regexp.Match(`^--foreign-id=.+$`, []byte(arg))
+				if foreignIdMatch {
+					foreignId := strings.ReplaceAll(arg, "--foreign-id=", "")
+					app.ForeignID = foreignId
+				}
+
 				break
 			}
 		}

@@ -1,6 +1,8 @@
 package fetcher
 
 import (
+	"io"
+	"io/ioutil"
 	"kulana/filter"
 	"kulana/misc"
 	"net/http"
@@ -14,12 +16,18 @@ func CreateHTTPClient() *http.Client {
 	}
 }
 
-func FetchHTTPHost(url string) filter.Output {
+func FetchHTTPHost(url string, foreignId string) filter.Output {
 	client := CreateHTTPClient()
 	start := misc.MicroTime()
 	resp, err := client.Get(url)
 	end := misc.MicroTime()
 	defer client.CloseIdleConnections()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(resp.Body)
 	misc.Check(err)
 
 	statusCode := resp.StatusCode
@@ -35,6 +43,7 @@ func FetchHTTPHost(url string) filter.Output {
 	}
 
 	contentLength := resp.ContentLength
+	body, err := ioutil.ReadAll(resp.Body)
 
 	response := filter.Output{
 		Url:           url,
@@ -42,13 +51,15 @@ func FetchHTTPHost(url string) filter.Output {
 		Time:          responseTimeRounded,
 		Destination:   destination,
 		ContentLength: contentLength,
+		Content:       string(body),
+		ForeignID:     foreignId,
 	}
 
 	return response
 }
 
-func FetchAndFilter(url string, f filter.OutputFilter) (filter.Output, filter.Output) {
-	response := FetchHTTPHost(url)
+func FetchAndFilter(url string, f filter.OutputFilter, foreignId string) (filter.Output, filter.Output) {
+	response := FetchHTTPHost(url, foreignId)
 	filteredResponse := filter.FilterOutput(response, f)
 	return response, filteredResponse
 }

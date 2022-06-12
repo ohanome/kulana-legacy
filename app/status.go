@@ -11,14 +11,14 @@ import (
 
 func runStatus(application Application) {
 	for {
-		response, filteredResponse := fetcher.FetchAndFilter(application.Url, application.Filter)
+		response, filteredResponse := fetcher.FetchAndFilter(application.Url, application.Filter, application.ForeignID)
 		fmt.Print(template.Render(application.OutputFormat, filteredResponse) + misc.GetNLChar())
 		if application.NotifyViaMail {
 			email.SendNotificationMail(application.NotifyMailTo, application.Url, response.Status)
 		}
 		if application.FollowRedirect && !application.RunInLoop && response.Status < 400 && response.Status >= 300 {
 			application.Url = response.Destination
-			response, filteredResponse = fetcher.FetchAndFilter(application.Url, application.Filter)
+			response, filteredResponse = fetcher.FetchAndFilter(application.Url, application.Filter, application.ForeignID)
 			fmt.Print(template.Render(application.OutputFormat, filteredResponse) + misc.GetNLChar())
 			if application.NotifyViaMail {
 				email.SendNotificationMail(application.NotifyMailTo, application.Url, response.Status)
