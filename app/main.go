@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"kulana/email"
+	"kulana/f"
 	"kulana/filter"
 	"kulana/misc"
 	"kulana/ping"
@@ -135,25 +136,39 @@ func ProcessArgs() Application {
 		os.Exit(1)
 	}
 
+	options := f.Parse()
+	if options.Help {
+		misc.Usage(app.Command)
+		os.Exit(0)
+	}
+
+	if options.Json {
+		app.OutputFormat = template.FormatJSON
+	}
+
+	if options.Csv {
+		app.OutputFormat = template.FormatCSV
+	}
+
+	if !options.Json && !options.Csv && options.Format != "" {
+		switch options.Format {
+		case "json":
+			app.OutputFormat = template.FormatJSON
+			break
+
+		case "csv":
+			app.OutputFormat = template.FormatCSV
+			break
+		}
+	}
+
+	if options.Full {
+		app.Filter = filter.GetDefault("all")
+	}
+
 	if len(os.Args) >= 2 {
 		for _, arg := range os.Args[2:] {
 			switch arg {
-			case "--help":
-			case "-h":
-				misc.Usage(app.Command)
-				os.Exit(0)
-
-			case "--json":
-				app.OutputFormat = template.FormatJSON
-				break
-
-			case "--csv":
-				app.OutputFormat = template.FormatCSV
-				break
-
-			case "--full":
-				app.Filter = filter.GetDefault("all")
-				break
 
 			case "--loop":
 				app.RunInLoop = true
