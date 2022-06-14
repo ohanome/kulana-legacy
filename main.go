@@ -8,7 +8,7 @@ import (
 )
 
 // Main entrypoint
-// TODO: Install and use viper.
+// TODO: Install and use viper (go get github.com/spf13/viper).
 func main() {
 	l.Notice("Starting new from scratch...")
 	o := options.Parse()
