@@ -2,8 +2,8 @@ package _app
 
 import (
 	"fmt"
-	"kulana/_email"
 	"kulana/_fetcher"
+	"kulana/_legacy/_email"
 	"kulana/_misc"
 	"kulana/_template"
 	"time"

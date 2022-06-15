@@ -1,47 +1,76 @@
 package l
 
 import (
-	"github.com/op/go-logging"
+	"github.com/lajosbencz/glo"
 	"kulana/options"
+	"kulana/setup"
 	"os"
 )
 
-var log = logging.MustGetLogger("kulana")
-
-var format = logging.MustStringFormatter(
-	`%{color}%{time:15:04:05.000} ▶ %{level:.4s} %{id:04x}%{color:reset} %{message}`,
-)
+var log = glo.NewFacility()
 
 func init() {
-	backend := logging.NewLogBackend(os.Stderr, "", 0)
-	backendLeveled := logging.AddModuleLevel(backend)
-	backendLeveled.SetLevel(logging.ERROR, "")
-	backendFormatter := logging.NewBackendFormatter(backend, format)
-	logging.SetBackend(backendLeveled, backendFormatter)
+	f, err := os.OpenFile(setup.GetLogFile(), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0600)
+	if err != nil {
+		panic(err)
+	}
+	handlerBfr := glo.NewHandler(f)
+	log.PushHandler(handlerBfr)
+
+	handlerStd := glo.NewHandler(os.Stdout)
+	filter := glo.NewFilterLevel(0)
+	handlerStd.PushFilter(filter)
+	log.PushHandler(handlerStd)
 }
 
 func Debug(level int, args string) {
 	if options.VerbosityLevel() >= level {
-		log.Debug(args)
+		err := log.Debug(args)
+		if err != nil {
+			Emergency(err.Error())
+		}
 	}
 }
 
 func Info(args string) {
-	log.Info(args)
+	err := log.Info(args)
+	if err != nil {
+		Emergency(err.Error())
+	}
 }
 
 func Notice(args string) {
-	log.Notice(args)
+	err := log.Notice(args)
+	if err != nil {
+		Emergency(err.Error())
+	}
 }
 
 func Warning(args string) {
-	log.Warning(args)
+	err := log.Warning(args)
+	if err != nil {
+		Emergency(err.Error())
+	}
 }
 
 func Error(args string) {
-	log.Error(args)
+	err := log.Error(args)
+	if err != nil {
+		Emergency(err.Error())
+	}
 }
 
 func Critical(args string) {
-	log.Critical(args)
+	err := log.Critical(args)
+	if err != nil {
+		Emergency(err.Error())
+	}
+}
+
+func Emergency(args string) {
+	err := log.Emergency(args)
+	if err != nil {
+		panic(err)
+	}
+	os.Exit(1)
 }
