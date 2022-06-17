@@ -5,7 +5,6 @@ import (
 	"kulana/_filter"
 	"kulana/_misc"
 	"kulana/_ping"
-	"kulana/_template"
 	"time"
 )
 
@@ -21,7 +20,7 @@ func runPing(application Application) {
 		} else {
 			_, f = _ping.PortAsOutput(application.Host, application.Port, application.Protocol, application.Timeout, application.Filter)
 		}
-		fmt.Print(_template.Render(application.OutputFormat, f) + _misc.GetNLChar())
+		fmt.Print(template.Render(application.OutputFormat, f) + _misc.GetNLChar())
 
 		if !application.RunInLoop {
 			return

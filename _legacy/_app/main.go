@@ -7,7 +7,6 @@ import (
 	"kulana/_filter"
 	"kulana/_misc"
 	"kulana/_ping"
-	"kulana/_template"
 	"net/mail"
 	"os"
 	"regexp"
@@ -143,21 +142,21 @@ func ProcessArgs() Application {
 	}
 
 	if options.Json {
-		app.OutputFormat = _template.FormatJSON
+		app.OutputFormat = template.FormatJSON
 	}
 
 	if options.Csv {
-		app.OutputFormat = _template.FormatCSV
+		app.OutputFormat = template.FormatCSV
 	}
 
 	if !options.Json && !options.Csv && options.Format != "" {
 		switch options.Format {
 		case "json":
-			app.OutputFormat = _template.FormatJSON
+			app.OutputFormat = template.FormatJSON
 			break
 
 		case "csv":
-			app.OutputFormat = _template.FormatCSV
+			app.OutputFormat = template.FormatCSV
 			break
 		}
 	}

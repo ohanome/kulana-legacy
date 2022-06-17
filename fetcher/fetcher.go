@@ -1,10 +1,11 @@
-package _fetcher
+package fetcher
 
 import (
 	"io"
 	"io/ioutil"
-	"kulana/_legacy/_filter"
-	"kulana/_legacy/_misc"
+	"kulana/l"
+	"kulana/misc"
+	"kulana/output"
 	"net/http"
 )
 
@@ -16,11 +17,11 @@ func CreateHTTPClient() *http.Client {
 	}
 }
 
-func FetchHTTPHost(url string, foreignId string) _filter.Output {
+func FetchHTTPHost(url string, foreignId string) output.Output {
 	client := CreateHTTPClient()
-	start := _misc.MicroTime()
+	start := misc.MicroTime()
 	resp, err := client.Get(url)
-	end := _misc.MicroTime()
+	end := misc.MicroTime()
 	defer client.CloseIdleConnections()
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -28,11 +29,13 @@ func FetchHTTPHost(url string, foreignId string) _filter.Output {
 			panic(err)
 		}
 	}(resp.Body)
-	_misc.Check(err)
+	if err != nil {
+		l.Emergency(err.Error())
+	}
 
 	statusCode := resp.StatusCode
 	responseTime := (end - start) * 1000
-	responseTimeRounded := _misc.Round(responseTime, 0.000001)
+	responseTimeRounded := misc.Round(responseTime, 0.000001)
 
 	var destination string
 	location, err := resp.Location()
@@ -45,7 +48,7 @@ func FetchHTTPHost(url string, foreignId string) _filter.Output {
 	contentLength := resp.ContentLength
 	body, err := ioutil.ReadAll(resp.Body)
 
-	response := _filter.Output{
+	response := output.Output{
 		Url:           url,
 		Status:        statusCode,
 		Time:          responseTimeRounded,
@@ -56,10 +59,4 @@ func FetchHTTPHost(url string, foreignId string) _filter.Output {
 	}
 
 	return response
-}
-
-func FetchAndFilter(url string, f _filter.OutputFilter, foreignId string) (_filter.Output, _filter.Output) {
-	response := FetchHTTPHost(url, foreignId)
-	filteredResponse := _filter.FilterOutput(response, f)
-	return response, filteredResponse
 }

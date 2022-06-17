@@ -5,21 +5,21 @@ import (
 	"kulana/_fetcher"
 	"kulana/_legacy/_email"
 	"kulana/_misc"
-	"kulana/_template"
+	"kulana/template"
 	"time"
 )
 
 func runStatus(application Application) {
 	for {
 		response, filteredResponse := _fetcher.FetchAndFilter(application.Url, application.Filter, application.ForeignID)
-		fmt.Print(_template.Render(application.OutputFormat, filteredResponse) + _misc.GetNLChar())
+		fmt.Print(template.Render(application.OutputFormat, filteredResponse) + _misc.GetNLChar())
 		if application.NotifyViaMail {
 			_email.SendNotificationMail(application.NotifyMailTo, application.Url, response.Status)
 		}
 		if application.FollowRedirect && !application.RunInLoop && response.Status < 400 && response.Status >= 300 {
 			application.Url = response.Destination
 			response, filteredResponse = _fetcher.FetchAndFilter(application.Url, application.Filter, application.ForeignID)
-			fmt.Print(_template.Render(application.OutputFormat, filteredResponse) + _misc.GetNLChar())
+			fmt.Print(template.Render(application.OutputFormat, filteredResponse) + _misc.GetNLChar())
 			if application.NotifyViaMail {
 				_email.SendNotificationMail(application.NotifyMailTo, application.Url, response.Status)
 			}

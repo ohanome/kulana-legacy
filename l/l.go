@@ -5,6 +5,7 @@ import (
 	"kulana/options"
 	"kulana/setup"
 	"os"
+	"time"
 )
 
 var log = glo.NewFacility()
@@ -14,13 +15,28 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	fi, err := f.Stat()
+	if fi.Size() > 1024*1024*1024 {
+		c, _ := os.ReadFile(setup.GetLogFile())
+		err = os.WriteFile(setup.GetLogFile()+time.Now().String(), c, 0600)
+		if err != nil {
+			panic(err)
+		}
+		err = os.WriteFile(setup.GetLogFile(), []byte(""), 0600)
+		if err != nil {
+			panic(err)
+		}
+	}
 	handlerBfr := glo.NewHandler(f)
 	log.PushHandler(handlerBfr)
 
-	handlerStd := glo.NewHandler(os.Stdout)
-	filter := glo.NewFilterLevel(0)
-	handlerStd.PushFilter(filter)
-	log.PushHandler(handlerStd)
+	o, _, _ := options.Parse()
+	if o.PrintLogs {
+		handlerStd := glo.NewHandler(os.Stdout)
+		filter := glo.NewFilterLevel(0)
+		handlerStd.PushFilter(filter)
+		log.PushHandler(handlerStd)
+	}
 }
 
 func Debug(level int, args string) {
