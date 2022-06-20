@@ -31,12 +31,15 @@ func init() {
 	log.PushHandler(handlerBfr)
 
 	o, _, _ := options.Parse()
+	level := glo.Emergency
 	if o.PrintLogs {
-		handlerStd := glo.NewHandler(os.Stdout)
-		filter := glo.NewFilterLevel(0)
-		handlerStd.PushFilter(filter)
-		log.PushHandler(handlerStd)
+		level = 0
 	}
+
+	handlerStd := glo.NewHandler(os.Stdout)
+	filter := glo.NewFilterLevel(level)
+	handlerStd.PushFilter(filter)
+	log.PushHandler(handlerStd)
 }
 
 func Debug(level int, args string) {
