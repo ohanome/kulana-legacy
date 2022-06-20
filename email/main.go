@@ -1,7 +1,9 @@
-package _email
+package email
 
 import (
 	"fmt"
+	"kulana/l"
+	"kulana/setup"
 	"net/smtp"
 	"os"
 	"strings"
@@ -17,29 +19,29 @@ type Mail struct {
 func CheckMailEnvironment(dieOnError bool) bool {
 	err := false
 	if os.Getenv("SMTP_HOST") == "" {
-		fmt.Println("Missing SMTP_HOST config. Edit the environment file under " + _setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_HOST config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
 		err = true
 	}
 	if os.Getenv("SMTP_USERNAME") == "" {
-		fmt.Println("Missing SMTP_USERNAME config. Edit the environment file under " + _setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_USERNAME config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
 		err = true
 	}
 	if os.Getenv("SMTP_PASSWORD") == "" {
-		fmt.Println("Missing SMTP_PASSWORD config. Edit the environment file under " + _setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_PASSWORD config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
 		err = true
 	}
 	if os.Getenv("SMTP_PORT") == "" {
-		fmt.Println("Missing SMTP_PORT config. Edit the environment file under " + _setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_PORT config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
 		err = true
 	}
 	if os.Getenv("SMTP_ADDRESS") == "" {
-		fmt.Println("Missing SMTP_ADDRESS config. Edit the environment file under " + _setup.GetEnvFile() + " and try again.")
+		fmt.Println("Missing SMTP_ADDRESS config. Edit the environment file under " + setup.GetEnvFile() + " and try again.")
 		err = true
 	}
 
 	if err {
 		if dieOnError {
-			_misc.Die("Mail setup incomplete.")
+			l.Emergency("Mail setup incomplete.")
 		}
 
 		return false

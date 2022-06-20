@@ -24,6 +24,7 @@ type Options struct {
 	ForeignId            string   `long:"foreign-id" description:"Sets the foreign id"`
 	RedirectOutput       bool     `long:"redirect-output" description:"Send the output to another destination than the logs, for example a file or an API"`
 	PrintLogs            bool     `long:"print-logs" description:"Prints the logs into stdout (kulana.log will still be written)"`
+	NoColor              bool     `long:"no-color" description:"Disables color output, affects only default format"`
 }
 
 func Parse() (Options, []string, error) {

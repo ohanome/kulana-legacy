@@ -2,6 +2,10 @@ package _ping
 
 import (
 	"fmt"
+	"kulana/filter"
+	"kulana/hostinfo"
+	"kulana/l"
+	"kulana/output"
 	"net"
 	"os"
 	"regexp"
@@ -41,7 +45,7 @@ func Port(host string, port int, protocol string, timeout int) (float64, string,
 	ipaddress := host
 	hostIPMatch, _ := regexp.Match(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`, []byte(host))
 	if !hostIPMatch {
-		info := _hostinfo.Fetch(host)
+		info := hostinfo.Fetch(host)
 		ipaddress = info.IPAddress
 	}
 
@@ -62,11 +66,13 @@ func Host(host string, protocol string, timeout int) (float64, string, error) {
 	return Port(host, DefaultPort, protocol, timeout)
 }
 
-func PortAsOutput(host string, port int, protocol string, timeout int, f _filter.OutputFilter) (_filter.Output, _filter.Output) {
+func PortAsOutput(host string, port int, protocol string, timeout int, f filter.Filter) (output.Output, output.Output) {
 	t, ip, err := Port(host, port, protocol, timeout)
-	_misc.Check(err)
+	if err != nil {
+		l.Emergency(err.Error())
+	}
 
-	o := _filter.Output{
+	o := output.Output{
 		Hostname:      host,
 		Port:          port,
 		Status:        0,
@@ -77,7 +83,7 @@ func PortAsOutput(host string, port int, protocol string, timeout int, f _filter
 		ICMPCode:      -1,
 	}
 
-	filtered := _filter.FilterOutput(o, f)
+	filtered := o.Filter(f)
 
 	return o, filtered
 }
@@ -142,11 +148,13 @@ func ICMP(target string, timeout int) (string, int, bool, float64, error) {
 	return ip.String(), parsedReply.Code, ok, elapsed, nil
 }
 
-func ICMPAsOutput(target string, timeout int, f _filter.OutputFilter) (_filter.Output, _filter.Output) {
+func ICMPAsOutput(target string, timeout int, f filter.Filter) (output.Output, output.Output) {
 	ip, icmpCode, _, elapsed, err := ICMP(target, timeout)
-	_misc.Check(err)
+	if err != nil {
+		l.Emergency(err.Error())
+	}
 
-	o := _filter.Output{
+	o := output.Output{
 		Hostname:      target,
 		Status:        0,
 		Time:          elapsed,
@@ -156,6 +164,6 @@ func ICMPAsOutput(target string, timeout int, f _filter.OutputFilter) (_filter.O
 		ICMPCode:      icmpCode,
 	}
 
-	of := _filter.FilterOutput(o, f)
+	of := o.Filter(f)
 	return o, of
 }

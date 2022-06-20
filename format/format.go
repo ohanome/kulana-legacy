@@ -1,4 +1,4 @@
-package _format
+package format
 
 import (
 	"fmt"

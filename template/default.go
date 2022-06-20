@@ -2,6 +2,8 @@ package template
 
 import (
 	"fmt"
+	"kulana/format"
+	"kulana/options"
 	"strconv"
 	"strings"
 )
@@ -9,7 +11,12 @@ import (
 func RenderDefault() string {
 	var template []string
 
+	o, _, _ := options.Parse()
+
 	if url != "" {
+		if !o.NoColor {
+			url = format.Blue + url + format.Reset
+		}
 		template = append(template, url)
 	}
 
@@ -18,7 +25,11 @@ func RenderDefault() string {
 	}
 
 	if port > 0 {
-		template = append(template, strconv.Itoa(port))
+		p := fmt.Sprintf("%d", port)
+		if !o.NoColor {
+			p = format.Purple + strconv.Itoa(port) + format.Reset
+		}
+		template = append(template, p)
 	}
 
 	if ipAddress != "" {
@@ -26,11 +37,31 @@ func RenderDefault() string {
 	}
 
 	if status != 0 {
-		template = append(template, strconv.Itoa(status))
+		s := fmt.Sprintf("%d", status)
+		if !o.NoColor {
+			if status < 300 {
+				s = format.Green + strconv.Itoa(status) + format.Reset
+			} else if status < 400 {
+				s = format.Yellow + strconv.Itoa(status) + format.Reset
+			} else {
+				s = format.Red + strconv.Itoa(status) + format.Reset
+			}
+		}
+		template = append(template, s)
 	}
 
 	if time != 0 {
-		template = append(template, fmt.Sprintf("%f", time))
+		t := fmt.Sprintf("%f", time)
+		if !o.NoColor {
+			if time < 200 {
+				t = format.Green + fmt.Sprintf("%f", time) + format.Reset
+			} else if time < 1000 {
+				t = format.Yellow + fmt.Sprintf("%f", time) + format.Reset
+			} else {
+				t = format.Red + fmt.Sprintf("%f", time) + format.Reset
+			}
+		}
+		template = append(template, t)
 	}
 
 	if destination != "" && status < 400 && status >= 300 {

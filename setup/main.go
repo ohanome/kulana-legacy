@@ -2,7 +2,6 @@ package setup
 
 import (
 	"github.com/joho/godotenv"
-	"kulana/_legacy/_misc"
 	"os"
 )
 
@@ -39,11 +38,15 @@ func ensureEnvFileIsReady() {
 		defaultEnv := getDefaultEnv()
 
 		fErr := os.WriteFile(envFile, defaultEnv, 0644)
-		_misc.Check(fErr)
+		if fErr != nil {
+			panic(fErr)
+		}
 	}
 
 	err = godotenv.Load(envFile)
-	_misc.Check(err)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func createSetupDirIfNotExists() {
