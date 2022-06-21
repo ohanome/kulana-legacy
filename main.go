@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	_ "kulana/command"
 	"kulana/fetcher"
 	"kulana/filter"
 	"kulana/l"
