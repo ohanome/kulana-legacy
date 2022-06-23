@@ -2,7 +2,7 @@ package l
 
 import (
 	"github.com/lajosbencz/glo"
-	"kulana/options"
+	"kulana/command"
 	"kulana/setup"
 	"os"
 	"time"
@@ -29,12 +29,7 @@ func init() {
 	}
 	handlerBfr := glo.NewHandler(f)
 	log.PushHandler(handlerBfr)
-
-	o, _, _ := options.Parse()
 	level := glo.Emergency
-	if o.PrintLogs {
-		level = 0
-	}
 
 	handlerStd := glo.NewHandler(os.Stdout)
 	filter := glo.NewFilterLevel(level)
@@ -43,7 +38,7 @@ func init() {
 }
 
 func Debug(level int, args string) {
-	if options.VerbosityLevel() >= level {
+	if command.VerbosityLevel() >= level {
 		err := log.Debug(args)
 		if err != nil {
 			Emergency(err.Error())

@@ -1,8 +1,8 @@
 package filter
 
 import (
+	"kulana/command"
 	"kulana/misc"
-	"kulana/options"
 )
 
 type Filter struct {
@@ -20,8 +20,7 @@ type Filter struct {
 	ForeignID     bool
 }
 
-func FromOptions() Filter {
-	o, _, _ := options.Parse()
+func FromOptions(o command.DefaultOptions) Filter {
 	return Filter{
 		Url:           misc.StringInSlice("url", o.Include),
 		Status:        misc.StringInSlice("status", o.Include),

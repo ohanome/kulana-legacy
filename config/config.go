@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"kulana/l"
-	"kulana/options"
 	"kulana/setup"
 	"os"
 )
@@ -31,12 +30,6 @@ var defaultConfig = Config{
 
 func init() {
 	viper.SetConfigFile(setup.GetConfigFile())
-	o, _, err := options.Parse()
-	if err != nil {
-		l.Emergency(err.Error())
-	}
-
-	SafeDefaults(true, o.RestoreDefaultConfig)
 }
 
 func Get(key string) interface{} {

@@ -1,6 +1,7 @@
 package template
 
 import (
+	"kulana/command"
 	"kulana/output"
 )
 
@@ -17,7 +18,11 @@ var icmpCode int
 var content string
 var foreignId string
 
-func Render(t string, o output.Output) string {
+var opt command.DefaultOptions
+
+func Render(t string, o output.Output, opts command.DefaultOptions) string {
+	opt = opts
+
 	url = o.Url
 	hostname = o.Hostname
 	port = o.Port
