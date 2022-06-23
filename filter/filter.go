@@ -1,7 +1,6 @@
 package filter
 
 import (
-	"kulana/command"
 	"kulana/misc"
 )
 
@@ -20,19 +19,19 @@ type Filter struct {
 	ForeignID     bool
 }
 
-func FromOptions(o command.DefaultOptions) Filter {
+func FromOptions(includes []string) Filter {
 	return Filter{
-		Url:           misc.StringInSlice("url", o.Include),
-		Status:        misc.StringInSlice("status", o.Include),
-		Time:          misc.StringInSlice("time", o.Include),
-		Destination:   misc.StringInSlice("destination", o.Include),
-		ContentLength: misc.StringInSlice("content_length", o.Include),
-		IpAddress:     misc.StringInSlice("ip_address", o.Include),
-		MXRecords:     misc.StringInSlice("mx_records", o.Include),
-		ICMPCode:      misc.StringInSlice("icmp_code", o.Include),
-		Hostname:      misc.StringInSlice("hostname", o.Include),
-		Port:          misc.StringInSlice("port", o.Include),
-		Content:       misc.StringInSlice("content", o.Include),
-		ForeignID:     misc.StringInSlice("foreign_id", o.Include),
+		Url:           misc.StringInSlice("url", includes),
+		Status:        misc.StringInSlice("status", includes),
+		Time:          misc.StringInSlice("time", includes),
+		Destination:   misc.StringInSlice("destination", includes),
+		ContentLength: misc.StringInSlice("content_length", includes),
+		IpAddress:     misc.StringInSlice("ip_address", includes),
+		MXRecords:     misc.StringInSlice("mx_records", includes),
+		ICMPCode:      misc.StringInSlice("icmp_code", includes),
+		Hostname:      misc.StringInSlice("hostname", includes),
+		Port:          misc.StringInSlice("port", includes),
+		Content:       misc.StringInSlice("content", includes),
+		ForeignID:     misc.StringInSlice("foreign_id", includes),
 	}
 }

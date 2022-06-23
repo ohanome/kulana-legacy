@@ -11,7 +11,7 @@ func RenderDefault() string {
 	var template []string
 
 	if url != "" {
-		if !opt.NoColor {
+		if !noColor {
 			url = format.Blue + url + format.Reset
 		}
 		template = append(template, url)
@@ -23,7 +23,7 @@ func RenderDefault() string {
 
 	if port > 0 {
 		p := fmt.Sprintf("%d", port)
-		if !opt.NoColor {
+		if !noColor {
 			p = format.Purple + strconv.Itoa(port) + format.Reset
 		}
 		template = append(template, p)
@@ -35,7 +35,7 @@ func RenderDefault() string {
 
 	if status != 0 {
 		s := fmt.Sprintf("%d", status)
-		if !opt.NoColor {
+		if !noColor {
 			if status < 300 {
 				s = format.Green + strconv.Itoa(status) + format.Reset
 			} else if status < 400 {
@@ -49,7 +49,7 @@ func RenderDefault() string {
 
 	if time != 0 {
 		t := fmt.Sprintf("%f", time)
-		if !opt.NoColor {
+		if !noColor {
 			if time < 200 {
 				t = format.Green + fmt.Sprintf("%f", time) + format.Reset
 			} else if time < 1000 {

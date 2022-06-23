@@ -1,7 +1,7 @@
 package template
 
 import (
-	"kulana/command"
+	"fmt"
 	"kulana/output"
 )
 
@@ -18,10 +18,10 @@ var icmpCode int
 var content string
 var foreignId string
 
-var opt command.DefaultOptions
+var noColor bool
 
-func Render(t string, o output.Output, opts command.DefaultOptions) string {
-	opt = opts
+func Render(t string, o output.Output, nc bool) string {
+	noColor = nc
 
 	url = o.Url
 	hostname = o.Hostname
@@ -35,6 +35,8 @@ func Render(t string, o output.Output, opts command.DefaultOptions) string {
 	icmpCode = o.ICMPCode
 	content = o.Content
 	foreignId = o.ForeignID
+
+	fmt.Println(t)
 
 	switch t {
 	case "json":

@@ -3,7 +3,6 @@ package fetcher
 import (
 	"io"
 	"io/ioutil"
-	"kulana/l"
 	"kulana/misc"
 	"kulana/output"
 	"net/http"
@@ -30,7 +29,7 @@ func FetchHTTPHost(url string, foreignId string) output.Output {
 		}
 	}(resp.Body)
 	if err != nil {
-		l.Emergency(err.Error())
+		panic(err)
 	}
 
 	statusCode := resp.StatusCode

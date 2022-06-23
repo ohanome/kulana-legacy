@@ -1,8 +1,6 @@
 package misc
 
 import (
-	"fmt"
-	"kulana/l"
 	"math"
 	"runtime"
 	"time"
@@ -20,21 +18,21 @@ func StringInSlice(a string, list []string) bool {
 }
 
 func Welcome() {
-	now := time.Now().Year()
-	dateParsed, err := time.Parse("2006", "2022")
-	date := dateParsed.Year()
-	str := fmt.Sprintf("%d", date)
-	if now != date {
-		str += fmt.Sprintf(" - %d", now)
-	}
-
-	if err != nil {
-		l.Emergency(err.Error())
-	}
-	l.Info(fmt.Sprintf("==========================================================="))
-	l.Info(fmt.Sprintf("*kulana %s - (c) %s *ohano, All rights reserved", Version, str))
-	l.Info(fmt.Sprintf("Check out the repository: https://github.com/ohanome/kulana"))
-	l.Info(fmt.Sprintf("==========================================================="))
+	//now := time.Now().Year()
+	//dateParsed, err := time.Parse("2006", "2022")
+	//date := dateParsed.Year()
+	//str := fmt.Sprintf("%d", date)
+	//if now != date {
+	//	str += fmt.Sprintf(" - %d", now)
+	//}
+	//
+	//if err != nil {
+	//	l.Emergency(err.Error())
+	//}
+	//l.Info(fmt.Sprintf("==========================================================="))
+	//l.Info(fmt.Sprintf("*kulana %s - (c) %s *ohano, All rights reserved", Version, str))
+	//l.Info(fmt.Sprintf("Check out the repository: https://github.com/ohanome/kulana"))
+	//l.Info(fmt.Sprintf("==========================================================="))
 }
 
 func MicroTime() float64 {
