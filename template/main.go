@@ -1,7 +1,6 @@
 package template
 
 import (
-	"fmt"
 	"kulana/output"
 )
 
@@ -35,8 +34,6 @@ func Render(t string, o output.Output, nc bool) string {
 	icmpCode = o.ICMPCode
 	content = o.Content
 	foreignId = o.ForeignID
-
-	fmt.Println(t)
 
 	switch t {
 	case "json":

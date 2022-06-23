@@ -25,7 +25,6 @@ func (c *StatusCommand) Execute(args []string) error {
 		f.Status = true
 		f.Time = true
 		out = out.Filter(f)
-		fmt.Println(defaultOptions.Json)
 		formatted := template.Render(defaultOptions.Format, out, defaultOptions.NoColor)
 		fmt.Println(formatted)
 		if !defaultOptions.Loop {
