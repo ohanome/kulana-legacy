@@ -3,16 +3,18 @@ package output
 import "kulana/filter"
 
 type Output struct {
-	Url           string
-	Status        int
-	Time          float64
-	Destination   string
-	ContentLength int64
-	IpAddress     string
-	MXRecords     []string
-	ICMPCode      int
-	Hostname      string
-	Port          int
+	Url            string
+	Status         int
+	Time           float64
+	Destination    string
+	ContentLength  int64
+	IpAddress      string
+	MXRecords      []string
+	ICMPCode       int
+	PingSuccessful int
+	Hostname       string
+	CNAME          string
+	Port           int
 
 	// The fetched page content.
 	Content string
@@ -24,6 +26,13 @@ type Output struct {
 	// - Page; an entity which is used to build the relationship between Outputs for the same URL (1:M Page:Output)
 	// In this case the ForeignID is the ID of the parent Page entity.
 	ForeignID string
+	// Instead of using a bool here, we will determine the validity by the following ints
+	// - -1: not checked
+	// - 0: not valid
+	// - 1: valid
+	CertificateValid      int
+	CertificateValidUntil string
+	CertificateIssuer     string
 }
 
 func (o Output) Filter(f filter.Filter) Output {
@@ -59,6 +68,14 @@ func (o Output) Filter(f filter.Filter) Output {
 		o.ICMPCode = -1
 	}
 
+	if !f.PingSuccessful {
+		o.PingSuccessful = -1
+	}
+
+	if !f.CNAME {
+		o.CNAME = ""
+	}
+
 	if !f.Hostname {
 		o.Hostname = ""
 	}
@@ -73,6 +90,18 @@ func (o Output) Filter(f filter.Filter) Output {
 
 	if !f.ForeignID {
 		o.ForeignID = ""
+	}
+
+	if !f.CertificateValid {
+		o.CertificateValid = -1
+	}
+
+	if !f.CertificateValidUntil {
+		o.CertificateValidUntil = ""
+	}
+
+	if !f.CertificateIssuer {
+		o.CertificateIssuer = ""
 	}
 
 	return o

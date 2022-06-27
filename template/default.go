@@ -47,7 +47,7 @@ func RenderDefault() string {
 		template = append(template, s)
 	}
 
-	if time != 0 {
+	if time > -1 {
 		t := fmt.Sprintf("%f", time)
 		if !noColor {
 			if time < 200 {
@@ -82,8 +82,32 @@ func RenderDefault() string {
 		template = append(template, fmt.Sprintf("%d", icmpCode))
 	}
 
+	if pingSuccessful > -1 {
+		success := format.Red + "Closed" + format.Reset
+		if pingSuccessful == 1 {
+			success = format.Green + "Open" + format.Reset
+		}
+		template = append(template, success)
+	}
+
+	if cname != "" {
+		template = append(template, cname)
+	}
+
 	if foreignId != "" {
 		template = append(template, fmt.Sprintf("%v", foreignId))
+	}
+
+	if certificateValid > -1 {
+		template = append(template, "Certificate Valid")
+	}
+
+	if certificateValidUntil != "" {
+		template = append(template, fmt.Sprintf("Certificate Valid Until: %v", certificateValidUntil))
+	}
+
+	if certificateIssuer != "" {
+		template = append(template, fmt.Sprintf("Certificate Issuer: %v", certificateIssuer))
 	}
 
 	t := strings.Join(template, "\t")

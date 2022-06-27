@@ -1,10 +1,9 @@
-package _ping
+package ping
 
 import (
 	"fmt"
 	"kulana/filter"
 	"kulana/hostinfo"
-	"kulana/l"
 	"kulana/output"
 	"net"
 	"os"
@@ -18,7 +17,7 @@ import (
 const Timeout = 30
 const ProtocolTCP = "tcp"
 const ProtocolUDP = "udp"
-const DefaultProtocol = ProtocolUDP
+const DefaultProtocol = ProtocolTCP
 const DefaultPort = 80
 
 func Port(host string, port int, protocol string, timeout int) (float64, string, error) {
@@ -36,26 +35,24 @@ func Port(host string, port int, protocol string, timeout int) (float64, string,
 
 	address := fmt.Sprintf("%s:%d", host, port)
 
+	ipaddress := host
+	hostIPMatch, _ := regexp.Match(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`, []byte(host))
+	if !hostIPMatch {
+		info := hostinfo.FetchAll(host)
+		ipaddress = info.IPAddress
+	}
+
 	duration := time.Duration(timeout) * time.Second
 
 	start := time.Now()
 	conn, err := net.DialTimeout(protocol, address, duration)
-	end := time.Now()
-
-	ipaddress := host
-	hostIPMatch, _ := regexp.Match(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`, []byte(host))
-	if !hostIPMatch {
-		info := hostinfo.Fetch(host)
-		ipaddress = info.IPAddress
-	}
-
 	if err != nil {
-		return 0.0, "", err
+		return float64(time.Now().Sub(start)) / float64(time.Millisecond), ipaddress, err
 	}
-
 	err = conn.Close()
+	end := time.Now()
 	if err != nil {
-		return 0.0, "", err
+		return float64(end.Sub(start)) / float64(time.Millisecond), ipaddress, err
 	}
 
 	elapsed := float64(end.Sub(start)) / float64(time.Millisecond)
@@ -68,19 +65,27 @@ func Host(host string, protocol string, timeout int) (float64, string, error) {
 
 func PortAsOutput(host string, port int, protocol string, timeout int, f filter.Filter) (output.Output, output.Output) {
 	t, ip, err := Port(host, port, protocol, timeout)
-	if err != nil {
-		l.Emergency(err.Error())
-	}
-
 	o := output.Output{
-		Hostname:      host,
-		Port:          port,
-		Status:        0,
-		Time:          t,
-		Destination:   "",
-		ContentLength: 0,
-		IpAddress:     ip,
-		ICMPCode:      -1,
+		Hostname:       host,
+		Port:           port,
+		Status:         0,
+		Time:           t,
+		Destination:    "",
+		ContentLength:  0,
+		IpAddress:      ip,
+		ICMPCode:       -1,
+		PingSuccessful: 1,
+	}
+	if err != nil {
+		connectionRefusedMatch, e := regexp.Match(`connect: connection refused`, []byte(err.Error()))
+		if e != nil {
+			panic(e)
+		}
+		if connectionRefusedMatch {
+			o.PingSuccessful = 0
+		} else {
+			panic(err)
+		}
 	}
 
 	filtered := o.Filter(f)
@@ -151,17 +156,18 @@ func ICMP(target string, timeout int) (string, int, bool, float64, error) {
 func ICMPAsOutput(target string, timeout int, f filter.Filter) (output.Output, output.Output) {
 	ip, icmpCode, _, elapsed, err := ICMP(target, timeout)
 	if err != nil {
-		l.Emergency(err.Error())
+		panic(err)
 	}
 
 	o := output.Output{
-		Hostname:      target,
-		Status:        0,
-		Time:          elapsed,
-		Destination:   "",
-		ContentLength: 0,
-		IpAddress:     ip,
-		ICMPCode:      icmpCode,
+		Hostname:       target,
+		Status:         0,
+		Time:           elapsed,
+		Destination:    "",
+		ContentLength:  0,
+		IpAddress:      ip,
+		ICMPCode:       icmpCode,
+		PingSuccessful: -1,
 	}
 
 	of := o.Filter(f)

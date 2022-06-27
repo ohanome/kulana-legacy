@@ -9,24 +9,39 @@ import (
 )
 
 type StatusCommand struct {
-	Url     string   `short:"u" long:"url" description:"The URL to get te status from" value-name:"URL" required:"true"`
-	Include []string `long:"include" description:"Includes specific fields" choice:"url" choice:"status" choice:"time" choice:"destination" choice:"content_length" choice:"ip_address" choice:"mx_records" choice:"icmp_code" choice:"hostname" choice:"port" choice:"content" choice:"foreign_id"`
+	Url      string `short:"u" long:"url" description:"The URL to get te status from" value-name:"URL" required:"true"`
+	CheckSSL bool   `short:"s" long:"check-ssl" description:"Check the SSL certificate"`
 }
 
 var statusCommand StatusCommand
 
+var statusFilter = filter.Filter{
+	Url:                   true,
+	Status:                true,
+	Time:                  true,
+	Destination:           true,
+	ContentLength:         true,
+	IpAddress:             true,
+	MXRecords:             false,
+	ICMPCode:              false,
+	PingSuccessful:        false,
+	Hostname:              false,
+	Port:                  false,
+	Content:               false,
+	ForeignID:             true,
+	CertificateValid:      true,
+	CertificateValidUntil: true,
+	CertificateIssuer:     true,
+}
+
 func (c *StatusCommand) Execute(args []string) error {
 	SetFormat()
 	for {
-		out := fetcher.FetchHTTPHost(c.Url, defaultOptions.ForeignId)
-		f := filter.FromOptions(c.Include)
-		// Apply defaults
-		f.Url = true
-		f.Status = true
-		f.Time = true
-		out = out.Filter(f)
+		out := fetcher.FetchHTTPHost(c.Url, defaultOptions.ForeignId, c.CheckSSL)
+		out = out.Filter(statusFilter)
 		formatted := template.Render(defaultOptions.Format, out, defaultOptions.NoColor)
 		fmt.Println(formatted)
+
 		if !defaultOptions.Loop {
 			break
 		}
