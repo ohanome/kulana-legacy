@@ -17,6 +17,7 @@ type PingCommand struct {
 	DefaultPorts bool   `long:"default-ports" description:"Use the default ports"`
 	ManyPorts    bool   `long:"many-ports" description:"Use many ports, not just the default ports from --default-ports"`
 	SkipClosed   bool   `long:"skip-closed" description:"Skip closed ports"`
+	All          bool   `long:"all" description:"Ping all ports. Only usable when hostname is '127.0.0.1'"`
 }
 
 var pingCommand PingCommand
@@ -29,11 +30,36 @@ var pingCommandDescription = Description{
 }
 
 var defaultPorts = []int{
-	21, 22, 80, 143, 443,
+	21, 22, 80, 443,
 }
 
 var manyPorts = []int{
-	21, 22, 80, 143, 443, 3000, 3001, 7777, 8000, 8080, 8443, 8888, 9999, 25565, 25566, 25567, 25568, 25569,
+	// FTP
+	21,
+	// SSH / SFTP
+	22,
+	// HTTP
+	80,
+	// IMAP
+	143,
+	// HTTPS
+	443,
+	// HTTP(S) alternatives (most likely nodejs apps)
+	3000,
+	3001,
+	8000,
+	8080,
+	8443,
+	8888,
+	9999,
+	// Satisfactory
+	7777,
+	// Minecraft
+	25565,
+	25566,
+	25567,
+	25568,
+	25569,
 }
 
 func (c *PingCommand) Execute(args []string) error {
@@ -74,6 +100,15 @@ func (c *PingCommand) Execute(args []string) error {
 
 	if c.Port != 0 {
 		c.Ports = append(c.Ports, c.Port)
+	}
+
+	if c.All && c.Hostname == "localhost" || c.Hostname == "127.0.0.1" {
+		c.Hostname = "127.0.0.1"
+		port := 1
+		for port < 65535 {
+			c.Ports = append(c.Ports, port)
+			port += 1
+		}
 	}
 
 	if len(c.Ports) == 0 {
