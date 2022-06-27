@@ -90,6 +90,10 @@ func RenderDefault() string {
 		template = append(template, success)
 	}
 
+	if pingError != "" {
+		template = append(template, fmt.Sprintf("Ping error: '%s'", pingError))
+	}
+
 	if cname != "" {
 		template = append(template, cname)
 	}

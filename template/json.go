@@ -62,6 +62,10 @@ func RenderJSON() string {
 		template = append(template, fmt.Sprintf("\"ping_successful\":%v", success))
 	}
 
+	if pingError != "" {
+		template = append(template, fmt.Sprintf("\"ping_error\":\"%s\"", pingError))
+	}
+
 	if cname != "" {
 		template = append(template, fmt.Sprintf("\"cname\":\"%s\"", cname))
 	}

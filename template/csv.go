@@ -58,6 +58,10 @@ func RenderCSV() string {
 		template = append(template, fmt.Sprintf("%d", pingSuccessful))
 	}
 
+	if pingError != "" {
+		template = append(template, pingError)
+	}
+
 	if cname != "" {
 		template = append(template, cname)
 	}

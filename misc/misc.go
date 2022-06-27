@@ -2,6 +2,7 @@ package misc
 
 import (
 	"math"
+	"regexp"
 	"runtime"
 	"time"
 )
@@ -55,4 +56,9 @@ func GetNLChar() string {
 	}
 
 	return nl
+}
+
+func RegexMatch(pattern string, str string) bool {
+	re := regexp.MustCompile(pattern)
+	return re.MatchString(str)
 }

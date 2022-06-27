@@ -14,7 +14,7 @@ type MXCommand struct {
 
 var mxCommand MXCommand
 
-var mxCommandDescription = CommandDescription{
+var mxCommandDescription = Description{
 	CommandName:      "mx",
 	ShortDescription: "Fetches MX records for a hostname",
 	LongDescription:  "Fetches MX records for a hostname",

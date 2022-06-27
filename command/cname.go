@@ -14,7 +14,7 @@ type CNAMECommand struct {
 
 var cnameCommand CNAMECommand
 
-var cnameCommandDescription = CommandDescription{
+var cnameCommandDescription = Description{
 	CommandName:      "cname",
 	ShortDescription: "Fetches CNAME records for a hostname",
 	LongDescription:  "Fetches CNAME records for a hostname",

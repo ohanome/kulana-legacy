@@ -38,8 +38,7 @@ func Port(host string, port int, protocol string, timeout int) (float64, string,
 	ipaddress := host
 	hostIPMatch, _ := regexp.Match(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`, []byte(host))
 	if !hostIPMatch {
-		info := hostinfo.FetchAll(host)
-		ipaddress = info.IPAddress
+		ipaddress = hostinfo.ResolveIPAddress(host)
 	}
 
 	duration := time.Duration(timeout) * time.Second
@@ -75,17 +74,11 @@ func PortAsOutput(host string, port int, protocol string, timeout int, f filter.
 		IpAddress:      ip,
 		ICMPCode:       -1,
 		PingSuccessful: 1,
+		PingError:      "",
 	}
 	if err != nil {
-		connectionRefusedMatch, e := regexp.Match(`connect: connection refused`, []byte(err.Error()))
-		if e != nil {
-			panic(e)
-		}
-		if connectionRefusedMatch {
-			o.PingSuccessful = 0
-		} else {
-			panic(err)
-		}
+		o.PingSuccessful = 0
+		o.PingError = err.Error()
 	}
 
 	filtered := o.Filter(f)

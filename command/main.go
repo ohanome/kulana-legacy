@@ -17,7 +17,7 @@ type DefaultOptions struct {
 	NoColor              bool   `long:"no-color" description:"Disables color output, affects only default format"`
 }
 
-type CommandDescription struct {
+type Description struct {
 	CommandName      string
 	ShortDescription string
 	LongDescription  string
@@ -30,7 +30,7 @@ var parser *flags.Parser
 func init() {
 	parser = flags.NewParser(&defaultOptions, flags.Default)
 
-	AddCommandFromDescriptions([]CommandDescription{
+	AddCommandFromDescriptions([]Description{
 		statusCommandDescription,
 		pingCommandDescription,
 		certCommandDescription,
@@ -74,14 +74,14 @@ func VerbosityLevel() int {
 	return len(defaultOptions.Verbose)
 }
 
-func AddCommandFromDescription(description CommandDescription) {
+func AddCommandFromDescription(description Description) {
 	_, err := parser.AddCommand(description.CommandName, description.ShortDescription, description.LongDescription, description.Command)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func AddCommandFromDescriptions(descriptions []CommandDescription) {
+func AddCommandFromDescriptions(descriptions []Description) {
 	for _, description := range descriptions {
 		AddCommandFromDescription(description)
 	}

@@ -10,6 +10,7 @@ type Filter struct {
 	MXRecords             bool
 	ICMPCode              bool
 	PingSuccessful        bool
+	PingError             bool
 	Hostname              bool
 	CNAME                 bool
 	Port                  bool

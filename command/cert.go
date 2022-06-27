@@ -14,11 +14,11 @@ type CertCommand struct {
 
 var certCommand CertCommand
 
-var certCommandDescription = CommandDescription{
+var certCommandDescription = Description{
 	CommandName:      "cert",
 	ShortDescription: "Resolves SSL certificate information for a hostname",
 	LongDescription:  "Resolves SSL certificate information for a hostname",
-	Command:          &mxCommand,
+	Command:          &certCommand,
 }
 
 func (c *CertCommand) Execute(args []string) error {

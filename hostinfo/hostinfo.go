@@ -63,10 +63,8 @@ func ResolveIPAddress(hostname string) string {
 
 func LookupMX(hostname string) []string {
 	hostname = URLToHostname(hostname)
-	mx, mxErr := net.LookupMX(hostname)
-	if mxErr != nil {
-		panic(mxErr)
-	}
+	// Ignore error since this indicates a hostname which has no MX records.
+	mx, _ := net.LookupMX(hostname)
 	var mxEntries []string
 	for _, m := range mx {
 		mxEntries = append(mxEntries, strings.TrimSuffix(m.Host, "."))

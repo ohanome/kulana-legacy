@@ -15,11 +15,13 @@ type PingCommand struct {
 	Timeout      int    `short:"t" long:"timeout" description:"The timeout in seconds" value-name:"TIMEOUT" required:"true" default:"30"`
 	Ports        []int  `long:"ports" description:"The ports to ping" value-name:"PORTS"`
 	DefaultPorts bool   `long:"default-ports" description:"Use the default ports"`
+	ManyPorts    bool   `long:"many-ports" description:"Use many ports, not just the default ports from --default-ports"`
+	SkipClosed   bool   `long:"skip-closed" description:"Skip closed ports"`
 }
 
 var pingCommand PingCommand
 
-var pingCommandDescription = CommandDescription{
+var pingCommandDescription = Description{
 	CommandName:      "ping",
 	ShortDescription: "Pings a given host",
 	LongDescription:  "The ping command pings a given host",
@@ -28,6 +30,10 @@ var pingCommandDescription = CommandDescription{
 
 var defaultPorts = []int{
 	21, 22, 80, 143, 443,
+}
+
+var manyPorts = []int{
+	21, 22, 80, 143, 443, 3000, 3001, 7777, 8000, 8080, 8443, 8888, 9999, 25565, 25566, 25567, 25568, 25569,
 }
 
 func (c *PingCommand) Execute(args []string) error {
@@ -42,6 +48,7 @@ func (c *PingCommand) Execute(args []string) error {
 		MXRecords:             false,
 		ICMPCode:              false,
 		PingSuccessful:        true,
+		PingError:             true,
 		Hostname:              true,
 		Port:                  true,
 		Content:               false,
@@ -54,7 +61,15 @@ func (c *PingCommand) Execute(args []string) error {
 	of := output.Output{}
 
 	if c.DefaultPorts {
-		c.Ports = defaultPorts
+		for _, port := range defaultPorts {
+			c.Ports = append(c.Ports, port)
+		}
+	}
+
+	if c.ManyPorts {
+		for _, port := range manyPorts {
+			c.Ports = append(c.Ports, port)
+		}
 	}
 
 	if c.Port != 0 {
@@ -69,6 +84,12 @@ func (c *PingCommand) Execute(args []string) error {
 				_, of = ping.PortAsOutput(c.Hostname, c.Port, ping.ProtocolTCP, c.Timeout, f)
 			}
 
+			if c.SkipClosed {
+				if of.PingSuccessful == 0 {
+					continue
+				}
+			}
+
 			formatted := template.Render(defaultOptions.Format, of, defaultOptions.NoColor)
 			fmt.Println(formatted)
 
@@ -81,6 +102,13 @@ func (c *PingCommand) Execute(args []string) error {
 	} else {
 		for _, port := range c.Ports {
 			_, of := ping.PortAsOutput(c.Hostname, port, ping.ProtocolTCP, c.Timeout, f)
+
+			if c.SkipClosed {
+				if of.PingSuccessful == 0 {
+					continue
+				}
+			}
+
 			formatted := template.Render(defaultOptions.Format, of, defaultOptions.NoColor)
 			fmt.Println(formatted)
 		}

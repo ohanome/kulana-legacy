@@ -12,6 +12,7 @@ type Output struct {
 	MXRecords      []string
 	ICMPCode       int
 	PingSuccessful int
+	PingError      string
 	Hostname       string
 	CNAME          string
 	Port           int
@@ -70,6 +71,10 @@ func (o Output) Filter(f filter.Filter) Output {
 
 	if !f.PingSuccessful {
 		o.PingSuccessful = -1
+	}
+
+	if !f.PingError {
+		o.PingError = ""
 	}
 
 	if !f.CNAME {

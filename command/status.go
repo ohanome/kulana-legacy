@@ -15,7 +15,7 @@ type StatusCommand struct {
 
 var statusCommand StatusCommand
 
-var statusCommandDescription = CommandDescription{
+var statusCommandDescription = Description{
 	CommandName:      "status",
 	ShortDescription: "Fetches the status of the given URL",
 	LongDescription:  "Fetches the status of the given URL",

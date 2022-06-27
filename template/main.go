@@ -14,6 +14,7 @@ var contentLength int64
 var ipAddress string
 var mxRecords []string
 var pingSuccessful int
+var pingError string
 var icmpCode int
 var cname string
 var content string
@@ -37,6 +38,7 @@ func Render(t string, o output.Output, nc bool) string {
 	ipAddress = o.IpAddress
 	mxRecords = o.MXRecords
 	pingSuccessful = o.PingSuccessful
+	pingError = o.PingError
 	cname = o.CNAME
 	icmpCode = o.ICMPCode
 	content = o.Content
