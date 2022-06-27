@@ -14,6 +14,13 @@ type CNAMECommand struct {
 
 var cnameCommand CNAMECommand
 
+var cnameCommandDescription = CommandDescription{
+	CommandName:      "cname",
+	ShortDescription: "Fetches CNAME records for a hostname",
+	LongDescription:  "Fetches CNAME records for a hostname",
+	Command:          &cnameCommand,
+}
+
 func (c *CNAMECommand) Execute(args []string) error {
 	SetFormat()
 	f := filter.Filter{

@@ -14,6 +14,13 @@ type MXCommand struct {
 
 var mxCommand MXCommand
 
+var mxCommandDescription = CommandDescription{
+	CommandName:      "mx",
+	ShortDescription: "Fetches MX records for a hostname",
+	LongDescription:  "Fetches MX records for a hostname",
+	Command:          &mxCommand,
+}
+
 func (c *MXCommand) Execute(args []string) error {
 	SetFormat()
 	f := filter.Filter{

@@ -14,6 +14,13 @@ type CertCommand struct {
 
 var certCommand CertCommand
 
+var certCommandDescription = CommandDescription{
+	CommandName:      "cert",
+	ShortDescription: "Resolves SSL certificate information for a hostname",
+	LongDescription:  "Resolves SSL certificate information for a hostname",
+	Command:          &mxCommand,
+}
+
 func (c *CertCommand) Execute(args []string) error {
 	SetFormat()
 	f := filter.Filter{

@@ -15,6 +15,13 @@ type StatusCommand struct {
 
 var statusCommand StatusCommand
 
+var statusCommandDescription = CommandDescription{
+	CommandName:      "status",
+	ShortDescription: "Fetches the status of the given URL",
+	LongDescription:  "Fetches the status of the given URL",
+	Command:          &statusCommand,
+}
+
 var statusFilter = filter.Filter{
 	Url:                   true,
 	Status:                true,

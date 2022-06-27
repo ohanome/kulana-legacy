@@ -18,6 +18,14 @@ type PingCommand struct {
 }
 
 var pingCommand PingCommand
+
+var pingCommandDescription = CommandDescription{
+	CommandName:      "ping",
+	ShortDescription: "Pings a given host",
+	LongDescription:  "The ping command pings a given host",
+	Command:          &pingCommand,
+}
+
 var defaultPorts = []int{
 	21, 22, 80, 143, 443,
 }
