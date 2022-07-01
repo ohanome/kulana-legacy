@@ -1,4 +1,4 @@
-# 📊 kulana (_kūlana_)
+![](./docs/static/img/logo.svg)
 
 Kūlana means "status" in hawaiian[*](https://hilo.hawaii.edu/wehe/?q=kulana#w2w2-10743) and that's all this project is about. With this tool on your hand you can fetch the status of nearly every single website, including information about the HTTP status, the response time and the content length.
 

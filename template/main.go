@@ -1,11 +1,8 @@
 package template
 
 import (
-	"kulana/filter"
+	"kulana/output"
 )
-
-const FormatJSON = "json"
-const FormatCSV = "csv"
 
 var url string
 var hostname string
@@ -16,19 +13,39 @@ var destination string
 var contentLength int64
 var ipAddress string
 var mxRecords []string
+var pingSuccessful int
+var pingError string
 var icmpCode int
+var cname string
+var content string
+var foreignId string
+var certificateValid int
+var certificateValidUntil string
+var certificateIssuer string
 
-func Render(t string, output filter.Output) string {
-	url = output.Url
-	hostname = output.Hostname
-	port = output.Port
-	status = output.Status
-	time = output.Time
-	destination = output.Destination
-	contentLength = output.ContentLength
-	ipAddress = output.IpAddress
-	mxRecords = output.MXRecords
-	icmpCode = output.ICMPCode
+var noColor bool
+
+func Render(t string, o output.Output, nc bool) string {
+	noColor = nc
+
+	url = o.Url
+	hostname = o.Hostname
+	port = o.Port
+	status = o.Status
+	time = o.Time
+	destination = o.Destination
+	contentLength = o.ContentLength
+	ipAddress = o.IpAddress
+	mxRecords = o.MXRecords
+	pingSuccessful = o.PingSuccessful
+	pingError = o.PingError
+	cname = o.CNAME
+	icmpCode = o.ICMPCode
+	content = o.Content
+	foreignId = o.ForeignID
+	certificateValid = o.CertificateValid
+	certificateValidUntil = o.CertificateValidUntil
+	certificateIssuer = o.CertificateIssuer
 
 	switch t {
 	case "json":

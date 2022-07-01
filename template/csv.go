@@ -29,7 +29,7 @@ func RenderCSV() string {
 		template = append(template, strconv.Itoa(status))
 	}
 
-	if time != 0 {
+	if time > 1 {
 		template = append(template, fmt.Sprintf("%f", time))
 	}
 
@@ -52,6 +52,39 @@ func RenderCSV() string {
 
 	if icmpCode >= 0 {
 		template = append(template, fmt.Sprintf("%d", icmpCode))
+	}
+
+	if pingSuccessful > -1 {
+		template = append(template, fmt.Sprintf("%d", pingSuccessful))
+	}
+
+	if pingError != "" {
+		template = append(template, pingError)
+	}
+
+	if cname != "" {
+		template = append(template, cname)
+	}
+
+	// Content will not be output for now.
+	//if content != "" {
+	//	template = append(template, fmt.Sprintf("\"\"\"%s\"\"\"", content))
+	//}
+
+	if foreignId != "" {
+		template = append(template, fmt.Sprintf("%v", foreignId))
+	}
+
+	if certificateValid > -1 {
+		template = append(template, fmt.Sprintf("%v", certificateValid))
+	}
+
+	if certificateValidUntil != "" {
+		template = append(template, fmt.Sprintf("%v", certificateValidUntil))
+	}
+
+	if certificateIssuer != "" {
+		template = append(template, fmt.Sprintf("%v", certificateIssuer))
 	}
 
 	t := strings.Join(template, ",")

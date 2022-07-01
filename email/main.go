@@ -2,7 +2,7 @@ package email
 
 import (
 	"fmt"
-	"kulana/misc"
+	"kulana/l"
 	"kulana/setup"
 	"net/smtp"
 	"os"
@@ -41,7 +41,7 @@ func CheckMailEnvironment(dieOnError bool) bool {
 
 	if err {
 		if dieOnError {
-			misc.Die("Mail setup incomplete.")
+			l.Emergency("Mail setup incomplete.")
 		}
 
 		return false

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"kulana/app"
+	_ "kulana/command"
+	_ "kulana/l"
+	"kulana/misc"
 	"kulana/setup"
 )
 
 // Main entrypoint
 func main() {
+	misc.Welcome()
 	setup.EnsureEnvironmentIsReady()
-	application := app.ProcessArgs()
-
-	app.Run(application)
 }

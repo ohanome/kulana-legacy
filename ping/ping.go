@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"kulana/filter"
 	"kulana/hostinfo"
-	"kulana/misc"
+	"kulana/output"
 	"net"
 	"os"
 	"regexp"
@@ -17,7 +17,7 @@ import (
 const Timeout = 30
 const ProtocolTCP = "tcp"
 const ProtocolUDP = "udp"
-const DefaultProtocol = ProtocolUDP
+const DefaultProtocol = ProtocolTCP
 const DefaultPort = 80
 
 func Port(host string, port int, protocol string, timeout int) (float64, string, error) {
@@ -35,26 +35,23 @@ func Port(host string, port int, protocol string, timeout int) (float64, string,
 
 	address := fmt.Sprintf("%s:%d", host, port)
 
+	ipaddress := host
+	hostIPMatch, _ := regexp.Match(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`, []byte(host))
+	if !hostIPMatch {
+		ipaddress = hostinfo.ResolveIPAddress(host)
+	}
+
 	duration := time.Duration(timeout) * time.Second
 
 	start := time.Now()
 	conn, err := net.DialTimeout(protocol, address, duration)
-	end := time.Now()
-
-	ipaddress := host
-	hostIPMatch, _ := regexp.Match(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`, []byte(host))
-	if !hostIPMatch {
-		info := hostinfo.Fetch(host)
-		ipaddress = info.IPAddress
-	}
-
 	if err != nil {
-		return 0.0, "", err
+		return float64(time.Now().Sub(start)) / float64(time.Millisecond), ipaddress, err
 	}
-
 	err = conn.Close()
+	end := time.Now()
 	if err != nil {
-		return 0.0, "", err
+		return float64(end.Sub(start)) / float64(time.Millisecond), ipaddress, err
 	}
 
 	elapsed := float64(end.Sub(start)) / float64(time.Millisecond)
@@ -65,22 +62,26 @@ func Host(host string, protocol string, timeout int) (float64, string, error) {
 	return Port(host, DefaultPort, protocol, timeout)
 }
 
-func PortAsOutput(host string, port int, protocol string, timeout int, f filter.OutputFilter) (filter.Output, filter.Output) {
+func PortAsOutput(host string, port int, protocol string, timeout int, f filter.Filter) (output.Output, output.Output) {
 	t, ip, err := Port(host, port, protocol, timeout)
-	misc.Check(err)
-
-	o := filter.Output{
-		Hostname:      host,
-		Port:          port,
-		Status:        0,
-		Time:          t,
-		Destination:   "",
-		ContentLength: 0,
-		IpAddress:     ip,
-		ICMPCode:      -1,
+	o := output.Output{
+		Hostname:       host,
+		Port:           port,
+		Status:         0,
+		Time:           t,
+		Destination:    "",
+		ContentLength:  0,
+		IpAddress:      ip,
+		ICMPCode:       -1,
+		PingSuccessful: 1,
+		PingError:      "",
+	}
+	if err != nil {
+		o.PingSuccessful = 0
+		o.PingError = err.Error()
 	}
 
-	filtered := filter.FilterOutput(o, f)
+	filtered := o.Filter(f)
 
 	return o, filtered
 }
@@ -145,20 +146,23 @@ func ICMP(target string, timeout int) (string, int, bool, float64, error) {
 	return ip.String(), parsedReply.Code, ok, elapsed, nil
 }
 
-func ICMPAsOutput(target string, timeout int, f filter.OutputFilter) (filter.Output, filter.Output) {
+func ICMPAsOutput(target string, timeout int, f filter.Filter) (output.Output, output.Output) {
 	ip, icmpCode, _, elapsed, err := ICMP(target, timeout)
-	misc.Check(err)
-
-	o := filter.Output{
-		Hostname:      target,
-		Status:        0,
-		Time:          elapsed,
-		Destination:   "",
-		ContentLength: 0,
-		IpAddress:     ip,
-		ICMPCode:      icmpCode,
+	if err != nil {
+		panic(err)
 	}
 
-	of := filter.FilterOutput(o, f)
+	o := output.Output{
+		Hostname:       target,
+		Status:         0,
+		Time:           elapsed,
+		Destination:    "",
+		ContentLength:  0,
+		IpAddress:      ip,
+		ICMPCode:       icmpCode,
+		PingSuccessful: -1,
+	}
+
+	of := o.Filter(f)
 	return o, of
 }

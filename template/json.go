@@ -29,7 +29,7 @@ func RenderJSON() string {
 		template = append(template, "\"status\":\""+strconv.Itoa(status)+"\"")
 	}
 
-	if time != 0 {
+	if time > -1 {
 		template = append(template, "\"time\":\""+fmt.Sprintf("%f", time)+"\"")
 	}
 
@@ -52,6 +52,50 @@ func RenderJSON() string {
 
 	if icmpCode >= 0 {
 		template = append(template, fmt.Sprintf("\"icmp_code\":%d", icmpCode))
+	}
+
+	if pingSuccessful > -1 {
+		success := false
+		if pingSuccessful == 1 {
+			success = true
+		}
+		template = append(template, fmt.Sprintf("\"ping_successful\":%v", success))
+	}
+
+	if pingError != "" {
+		template = append(template, fmt.Sprintf("\"ping_error\":\"%s\"", pingError))
+	}
+
+	if cname != "" {
+		template = append(template, fmt.Sprintf("\"cname\":\"%s\"", cname))
+	}
+
+	// Content will not be output for now.
+	//if content != "" {
+	//	c := strings.ReplaceAll(content, "\"", "'")
+	//	c = strings.ReplaceAll(c, "\n", "")
+	//	c = strings.ReplaceAll(c, "\r", "")
+	//	template = append(template, "\"content\":\""+c+"\"")
+	//}
+
+	if foreignId != "" {
+		template = append(template, fmt.Sprintf("\"foreign_id\":\"%v\"", foreignId))
+	}
+
+	if certificateValid > -1 {
+		isValid := false
+		if certificateValid == 1 {
+			isValid = true
+		}
+		template = append(template, fmt.Sprintf("\"certificate_valid\":\"%v\"", isValid))
+	}
+
+	if certificateValidUntil != "" {
+		template = append(template, fmt.Sprintf("\"certificate_valid_until\":\"%v\"", certificateValidUntil))
+	}
+
+	if certificateIssuer != "" {
+		template = append(template, fmt.Sprintf("\"certificate_issuer\":\"%v\"", certificateIssuer))
 	}
 
 	t := "{" + strings.Join(template, ",") + "}"
