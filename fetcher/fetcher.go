@@ -45,30 +45,32 @@ func FetchHTTPHost(url string, foreignId string, checkSSLCert bool) output.Outpu
 		destination = location.String()
 	}
 
-	contentLength := resp.ContentLength
 	body, err := ioutil.ReadAll(resp.Body)
+	contentLength := int64(len(body))
 
 	response := output.Output{
-		Url:                   url,
-		Status:                statusCode,
-		Time:                  responseTimeRounded,
-		Destination:           destination,
-		ContentLength:         contentLength,
-		Content:               string(body),
-		ForeignID:             foreignId,
-		IpAddress:             hostinfo.ResolveIPAddress(url),
-		CertificateValid:      -1,
-		CertificateValidUntil: "",
+		Url:           url,
+		Status:        statusCode,
+		Time:          responseTimeRounded,
+		Destination:   destination,
+		ContentLength: contentLength,
+		Content:       string(body),
+		ForeignID:     foreignId,
+		IpAddress:     hostinfo.ResolveIPAddress(url),
+		Certificate: output.CertificateOutput{
+			ValidUntil: "",
+			Issuer:     "",
+		},
 	}
 
 	if checkSSLCert {
 		certIsValid, validUntil, issuer := hostinfo.CheckCertificate(url)
 		if certIsValid {
-			response.CertificateValid = 1
-			response.CertificateValidUntil = validUntil.Format("2006-01-02 15:04:05")
-			response.CertificateIssuer = issuer
+			response.Certificate.Valid = true
+			response.Certificate.ValidUntil = validUntil.Format("2006-01-02 15:04:05")
+			response.Certificate.Issuer = issuer
 		} else {
-			response.CertificateValid = 0
+			response.Certificate.Valid = false
 		}
 	}
 

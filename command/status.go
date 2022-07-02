@@ -23,22 +23,24 @@ var statusCommandDescription = Description{
 }
 
 var statusFilter = filter.Filter{
-	Url:                   true,
-	Status:                true,
-	Time:                  true,
-	Destination:           true,
-	ContentLength:         true,
-	IpAddress:             true,
-	MXRecords:             false,
-	ICMPCode:              false,
-	PingSuccessful:        false,
-	Hostname:              false,
-	Port:                  false,
-	Content:               false,
-	ForeignID:             true,
-	CertificateValid:      true,
-	CertificateValidUntil: true,
-	CertificateIssuer:     true,
+	Url:            true,
+	Status:         true,
+	Time:           true,
+	Destination:    true,
+	ContentLength:  true,
+	IpAddress:      true,
+	MXRecords:      false,
+	ICMPCode:       false,
+	PingSuccessful: false,
+	Hostname:       false,
+	Port:           false,
+	Content:        false,
+	ForeignID:      true,
+	Certificate: filter.CertificateFilter{
+		Valid:      true,
+		ValidUntil: true,
+		Issuer:     true,
+	},
 }
 
 func (c *StatusCommand) Execute(args []string) error {

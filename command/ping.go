@@ -62,27 +62,30 @@ var manyPorts = []int{
 	25569,
 }
 
+var pingFilter = filter.Filter{
+	Url:            false,
+	Status:         false,
+	Time:           true,
+	Destination:    false,
+	ContentLength:  false,
+	IpAddress:      true,
+	MXRecords:      false,
+	ICMPCode:       false,
+	PingSuccessful: true,
+	PingError:      true,
+	Hostname:       true,
+	Port:           true,
+	Content:        false,
+	ForeignID:      false,
+	Certificate: filter.CertificateFilter{
+		Valid:      false,
+		ValidUntil: false,
+		Issuer:     false,
+	},
+}
+
 func (c *PingCommand) Execute(args []string) error {
 	SetFormat()
-	f := filter.Filter{
-		Url:                   false,
-		Status:                false,
-		Time:                  true,
-		Destination:           false,
-		ContentLength:         false,
-		IpAddress:             true,
-		MXRecords:             false,
-		ICMPCode:              false,
-		PingSuccessful:        true,
-		PingError:             true,
-		Hostname:              true,
-		Port:                  true,
-		Content:               false,
-		ForeignID:             false,
-		CertificateValid:      false,
-		CertificateValidUntil: false,
-		CertificateIssuer:     false,
-	}
 
 	of := output.Output{}
 
@@ -114,9 +117,9 @@ func (c *PingCommand) Execute(args []string) error {
 	if len(c.Ports) == 0 {
 		for {
 			if c.Port == 0 {
-				_, of = ping.ICMPAsOutput(c.Hostname, c.Timeout, f)
+				_, of = ping.ICMPAsOutput(c.Hostname, c.Timeout, pingFilter)
 			} else {
-				_, of = ping.PortAsOutput(c.Hostname, c.Port, ping.ProtocolTCP, c.Timeout, f)
+				_, of = ping.PortAsOutput(c.Hostname, c.Port, ping.ProtocolTCP, c.Timeout, pingFilter)
 			}
 
 			if c.SkipClosed {
@@ -136,7 +139,7 @@ func (c *PingCommand) Execute(args []string) error {
 		}
 	} else {
 		for _, port := range c.Ports {
-			_, of := ping.PortAsOutput(c.Hostname, port, ping.ProtocolTCP, c.Timeout, f)
+			_, of := ping.PortAsOutput(c.Hostname, port, ping.ProtocolTCP, c.Timeout, pingFilter)
 
 			if c.SkipClosed {
 				if of.PingSuccessful == 0 {

@@ -36,6 +36,7 @@ func init() {
 		certCommandDescription,
 		cnameCommandDescription,
 		mxCommandDescription,
+		infoCommandDescription,
 	})
 
 	_, err := parser.Parse()

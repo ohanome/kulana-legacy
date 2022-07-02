@@ -21,31 +21,34 @@ var mxCommandDescription = Description{
 	Command:          &mxCommand,
 }
 
+var mxFilter = filter.Filter{
+	Url:            false,
+	Status:         false,
+	Time:           false,
+	Destination:    false,
+	ContentLength:  false,
+	IpAddress:      false,
+	MXRecords:      true,
+	ICMPCode:       false,
+	PingSuccessful: false,
+	Hostname:       true,
+	Port:           false,
+	Content:        false,
+	ForeignID:      false,
+	Certificate: filter.CertificateFilter{
+		Valid:      false,
+		ValidUntil: false,
+		Issuer:     false,
+	},
+}
+
 func (c *MXCommand) Execute(args []string) error {
 	SetFormat()
-	f := filter.Filter{
-		Url:                   false,
-		Status:                false,
-		Time:                  false,
-		Destination:           false,
-		ContentLength:         false,
-		IpAddress:             false,
-		MXRecords:             true,
-		ICMPCode:              false,
-		PingSuccessful:        false,
-		Hostname:              true,
-		Port:                  false,
-		Content:               false,
-		ForeignID:             false,
-		CertificateValid:      false,
-		CertificateValidUntil: false,
-		CertificateIssuer:     false,
-	}
 
 	of := output.Output{}
 	mx := hostinfo.LookupMX(c.Hostname)
 	o := output.Output{MXRecords: mx, Hostname: c.Hostname}
-	of = o.Filter(f)
+	of = o.Filter(mxFilter)
 	formatted := template.Render(defaultOptions.Format, of, defaultOptions.NoColor)
 	fmt.Println(formatted)
 	return nil

@@ -75,7 +75,7 @@ func RenderCSV() string {
 		template = append(template, fmt.Sprintf("%v", foreignId))
 	}
 
-	if certificateValid > -1 {
+	if certificateValid == true {
 		template = append(template, fmt.Sprintf("%v", certificateValid))
 	}
 

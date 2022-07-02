@@ -4,6 +4,8 @@ import (
 	"kulana/output"
 )
 
+var originalOutput output.Output
+
 var url string
 var hostname string
 var port int
@@ -19,13 +21,15 @@ var icmpCode int
 var cname string
 var content string
 var foreignId string
-var certificateValid int
+var certificateValid bool
 var certificateValidUntil string
 var certificateIssuer string
 
 var noColor bool
 
 func Render(t string, o output.Output, nc bool) string {
+	originalOutput = o
+
 	noColor = nc
 
 	url = o.Url
@@ -43,9 +47,9 @@ func Render(t string, o output.Output, nc bool) string {
 	icmpCode = o.ICMPCode
 	content = o.Content
 	foreignId = o.ForeignID
-	certificateValid = o.CertificateValid
-	certificateValidUntil = o.CertificateValidUntil
-	certificateIssuer = o.CertificateIssuer
+	certificateValid = o.Certificate.Valid
+	certificateValidUntil = o.Certificate.ValidUntil
+	certificateIssuer = o.Certificate.Issuer
 
 	switch t {
 	case "json":
