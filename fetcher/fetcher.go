@@ -6,6 +6,7 @@ import (
 	"kulana/hostinfo"
 	"kulana/misc"
 	"kulana/output"
+	"log"
 	"net/http"
 )
 
@@ -19,8 +20,13 @@ func CreateHTTPClient() *http.Client {
 
 func FetchHTTPHost(url string, foreignId string, checkSSLCert bool) output.Output {
 	client := CreateHTTPClient()
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Set("User-Agent", "ohano *kulana/"+misc.Version)
 	start := misc.MicroTime()
-	resp, err := client.Get(url)
+	resp, err := client.Do(req)
 	end := misc.MicroTime()
 	defer client.CloseIdleConnections()
 	defer func(Body io.ReadCloser) {
