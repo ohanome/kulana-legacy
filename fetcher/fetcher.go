@@ -1,7 +1,7 @@
 package fetcher
 
 import (
-	"io"
+	"crypto/tls"
 	"io/ioutil"
 	"kulana/hostinfo"
 	"kulana/misc"
@@ -11,10 +11,14 @@ import (
 )
 
 func CreateHTTPClient() *http.Client {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
 	return &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
+		Transport: tr,
 	}
 }
 
@@ -29,14 +33,19 @@ func FetchHTTPHost(url string, foreignId string, checkSSLCert bool) output.Outpu
 	resp, err := client.Do(req)
 	end := misc.MicroTime()
 	defer client.CloseIdleConnections()
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(resp.Body)
 	if err != nil {
-		panic(err)
+		return output.Output{
+			Url:                   url,
+			Status:                0,
+			Time:                  0,
+			Destination:           "",
+			ContentLength:         0,
+			Content:               "",
+			ForeignID:             foreignId,
+			IpAddress:             "",
+			CertificateValid:      -1,
+			CertificateValidUntil: "",
+		}
 	}
 
 	statusCode := resp.StatusCode
