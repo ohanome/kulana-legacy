@@ -9,8 +9,8 @@ import (
 )
 
 type StatusCommand struct {
-	Url      string `short:"u" long:"url" description:"The URL to get te status from" value-name:"URL" required:"true"`
-	CheckSSL bool   `short:"s" long:"check-ssl" description:"Check the SSL certificate"`
+	Url      []string `short:"u" long:"url" description:"The URL to get te status from" value-name:"URL" required:"true"`
+	CheckSSL bool     `short:"s" long:"check-ssl" description:"Check the SSL certificate"`
 }
 
 var statusCommand StatusCommand
@@ -44,10 +44,12 @@ var statusFilter = filter.Filter{
 func (c *StatusCommand) Execute(args []string) error {
 	SetFormat()
 	for {
-		out := fetcher.FetchHTTPHost(c.Url, defaultOptions.ForeignId, c.CheckSSL)
-		out = out.Filter(statusFilter)
-		formatted := template.Render(defaultOptions.Format, out, defaultOptions.NoColor)
-		fmt.Println(formatted)
+		for _, url := range c.Url {
+			out := fetcher.FetchHTTPHost(url, defaultOptions.ForeignId, c.CheckSSL)
+			out = out.Filter(statusFilter)
+			formatted := template.Render(defaultOptions.Format, out, defaultOptions.NoColor)
+			fmt.Println(formatted)
+		}
 
 		if !defaultOptions.Loop {
 			break
