@@ -35,16 +35,18 @@ func FetchHTTPHost(url string, foreignId string, checkSSLCert bool) output.Outpu
 	defer client.CloseIdleConnections()
 	if err != nil {
 		return output.Output{
-			Url:                   url,
-			Status:                0,
-			Time:                  0,
-			Destination:           "",
-			ContentLength:         0,
-			Content:               "",
-			ForeignID:             foreignId,
-			IpAddress:             "",
-			CertificateValid:      -1,
-			CertificateValidUntil: "",
+			Url:           url,
+			Status:        0,
+			Time:          0,
+			Destination:   "",
+			ContentLength: 0,
+			Content:       "",
+			ForeignID:     foreignId,
+			IpAddress:     "",
+			Certificate: output.CertificateOutput{
+				ValidUntil: "",
+				Issuer:     "",
+			},
 		}
 	}
 
