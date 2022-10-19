@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "kulana/command"
-	_ "kulana/l"
 	"kulana/misc"
 	"kulana/setup"
 )
